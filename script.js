@@ -1,176 +1,124 @@
-// Initialize configuration
-const config = window.VALENTINE_CONFIG;
+const config = window.VALENTINE_CONFIG || {};
 
-// ---------------------------
-// MP3 Music (local file)
-// Requires in index.html (before script.js):
-// <audio id="bgMusic" preload="auto" loop playsinline>
-//   <source src="assets/music.mp3" type="audio/mpeg">
-// </audio>
-// ---------------------------
-let musicIsPlaying = false;
-
-function playMusic() {
-  const a = document.getElementById("bgMusic");
-  if (!a) {
-    console.log("bgMusic audio tag not found");
-    return;
-  }
-
-  a.volume = 0.7;
-  a.muted = false;
-
-  const p = a.play();
-  if (p && typeof p.catch === "function") {
-    p.catch((err) => {
-      console.log("Music play blocked/failed:", err);
-    });
-  }
-
-  musicIsPlaying = true;
-}
-
-function stopMusic() {
-  const a = document.getElementById("bgMusic");
-  if (!a) return;
-  a.pause();
-  musicIsPlaying = false;
-}
-
-// Force music to start on first user interaction (fixes autoplay blocks)
-function setupFirstClickMusic() {
-  const startOnFirstTap = () => {
-    playMusic();
-    const musicToggle = document.getElementById("musicToggle");
-    if (musicToggle) musicToggle.textContent = "🔇 Stop Music";
-  };
-
-  // once: true => runs only once
-  document.addEventListener("click", startOnFirstTap, { once: true });
-  document.addEventListener("touchstart", startOnFirstTap, { once: true, passive: true });
-}
-
-// ---------------------------
-// Validate configuration
-// ---------------------------
-function validateConfig() {
-  const warnings = [];
-
-  if (!config.valentineName) {
-    warnings.push("Valentine's name is not set! Using default.");
-    config.valentineName = "My Love";
-  }
-
-  const isValidHex = (hex) => /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(hex);
-
-  if (config.colors) {
-    Object.entries(config.colors).forEach(([key, value]) => {
-      if (!isValidHex(value)) {
-        warnings.push(`Invalid color for ${key}! Using default.`);
-        config.colors[key] = getDefaultColor(key);
-      }
-    });
-  }
-
-  if (config.animations && parseFloat(config.animations.floatDuration) < 5) {
-    warnings.push("Float duration too short! Setting to 5s minimum.");
-    config.animations.floatDuration = "5s";
-  }
-
-  if (config.animations && (config.animations.heartExplosionSize < 1 || config.animations.heartExplosionSize > 3)) {
-    warnings.push("Heart explosion size should be between 1 and 3! Using default.");
-    config.animations.heartExplosionSize = 1.5;
-  }
-
-  if (warnings.length > 0) {
-    console.warn("⚠️ Configuration Warnings:");
-    warnings.forEach((w) => console.warn("- " + w));
-  }
-}
-
-function getDefaultColor(key) {
-  const defaults = {
-    backgroundStart: "#ffafbd",
-    backgroundEnd: "#ffc3a0",
-    buttonBackground: "#ff6b6b",
-    buttonHover: "#ff8787",
-    textColor: "#ff4757",
-  };
-  return defaults[key];
-}
-
-// Set page title
+// Title
 document.title = config.pageTitle || "Valentine 💝";
 
-// ---------------------------
-// Apply theme colors (optional)
-// ---------------------------
-function applyTheme() {
-  if (!config.colors) return;
+// Apply theme colors if CSS uses variables
+(function applyTheme(){
+  if(!config.colors) return;
   const r = document.documentElement;
   r.style.setProperty("--bg1", config.colors.backgroundStart);
   r.style.setProperty("--bg2", config.colors.backgroundEnd);
   r.style.setProperty("--btn", config.colors.buttonBackground);
   r.style.setProperty("--btnHover", config.colors.buttonHover);
   r.style.setProperty("--text", config.colors.textColor);
+})();
+
+// DOM init
+window.addEventListener("DOMContentLoaded", () => {
+  // Set texts
+  const titleEl = document.getElementById("valentineTitle");
+  if (titleEl) titleEl.textContent = `${config.valentineName || "My Love"}, my love...`;
+
+  const q1 = document.getElementById("question1Text");
+  const y1 = document.getElementById("yesBtn1");
+  const n1 = document.getElementById("noBtn1");
+  const secretBtn = document.getElementById("secretAnswerBtn");
+
+  const q2 = document.getElementById("question2Text");
+  const st = document.getElementById("startText");
+  const nb = document.getElementById("nextBtn");
+
+  const q3 = document.getElementById("question3Text");
+  const y3 = document.getElementById("yesBtn3");
+  const n3 = document.getElementById("noBtn3");
+
+  if (q1) q1.textContent = config.questions?.first?.text || "Do you like me?";
+  if (y1) y1.textContent = config.questions?.first?.yesBtn || "Yes";
+  if (n1) n1.textContent = config.questions?.first?.noBtn || "No";
+  if (secretBtn) secretBtn.textContent = "Secret 💌";
+
+  if (q2) q2.textContent = config.questions?.second?.text || "How much do you love me?";
+  if (st) st.textContent = config.questions?.second?.startText || "This much!";
+  if (nb) nb.textContent = config.questions?.second?.nextBtn || "Next ❤️";
+
+  if (q3) q3.textContent = config.questions?.third?.text || "Will you be my Valentine?";
+  if (y3) y3.textContent = config.questions?.third?.yesBtn || "Yes!";
+  if (n3) n3.textContent = config.questions?.third?.noBtn || "No";
+
+  // Floating emojis
+  createFloatingElements();
+
+  // Buttons flow
+  if (y1) y1.addEventListener("click", () => showNextQuestion(2));
+  if (nb) nb.addEventListener("click", () => showNextQuestion(3));
+  if (y3) y3.addEventListener("click", celebrate);
+
+  // Secret button
+  if (secretBtn) {
+    secretBtn.addEventListener("click", () => {
+      alert(config.questions?.first?.secretAnswer || "I love you ❤️");
+    });
+  }
+
+  // No button prank MAX
+  if (n1 && y1) prankNoButton(n1, y1);
+  if (n3 && y3) prankNoButton(n3, y3);
+
+  // Love meter
+  setupLoveMeter();
+
+  // Hidden surprise: type "bubu"
+  setupHiddenSurprise();
+});
+
+function showNextQuestion(num) {
+  document.querySelectorAll(".question-section").forEach((q) => q.classList.add("hidden"));
+  const el = document.getElementById(`question${num}`);
+  if (el) el.classList.remove("hidden");
 }
 
-// ---------------------------
-// Floating emojis
-// ---------------------------
 function createFloatingElements() {
   const container = document.querySelector(".floating-elements");
   if (!container) return;
 
-  (config.floatingEmojis?.hearts || []).forEach((heart) => {
-    const div = document.createElement("div");
-    div.className = "heart";
-    div.innerHTML = heart;
-    setRandomPosition(div);
-    container.appendChild(div);
+  const hearts = config.floatingEmojis?.hearts || ["❤️"];
+  const bears = config.floatingEmojis?.bears || ["🧸"];
+
+  hearts.forEach((h) => {
+    const d = document.createElement("div");
+    d.className = "heart";
+    d.innerHTML = h;
+    setRandomPosition(d);
+    container.appendChild(d);
   });
 
-  (config.floatingEmojis?.bears || []).forEach((bear) => {
-    const div = document.createElement("div");
-    div.className = "bear";
-    div.innerHTML = bear;
-    setRandomPosition(div);
-    container.appendChild(div);
+  bears.forEach((b) => {
+    const d = document.createElement("div");
+    d.className = "bear";
+    d.innerHTML = b;
+    setRandomPosition(d);
+    container.appendChild(d);
   });
 }
 
-function setRandomPosition(element) {
-  element.style.left = Math.random() * 100 + "vw";
-  element.style.animationDelay = Math.random() * 5 + "s";
-  element.style.animationDuration = 10 + Math.random() * 20 + "s";
+function setRandomPosition(el) {
+  el.style.left = Math.random() * 100 + "vw";
+  el.style.animationDelay = Math.random() * 5 + "s";
+  el.style.animationDuration = 10 + Math.random() * 20 + "s";
 }
 
-// ---------------------------
-// Navigation
-// ---------------------------
-function showNextQuestion(questionNumber) {
-  document.querySelectorAll(".question-section").forEach((q) => q.classList.add("hidden"));
-  const next = document.getElementById(`question${questionNumber}`);
-  if (next) next.classList.remove("hidden");
-}
-
-// ---------------------------
-// No button prank MAX
-// ---------------------------
 function prankNoButton(noBtn, yesBtn) {
-  if (!noBtn || !yesBtn) return;
-
   let attempts = 0;
   noBtn.style.position = "fixed";
 
-  const moveNo = () => {
+  const move = () => {
     attempts++;
-
     const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
     const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
 
-    noBtn.style.left = `${Math.max(10, x)}px`;
-    noBtn.style.top = `${Math.max(10, y)}px`;
+    noBtn.style.left = `${Math.max(12, x)}px`;
+    noBtn.style.top = `${Math.max(12, y)}px`;
     noBtn.style.transform = `rotate(${(Math.random() * 18 - 9).toFixed(0)}deg)`;
 
     const phrases = ["No 🙈", "No? sure? 😼", "Try again 😭", "Not happening 😌", "Nice try 😈", "Hehe nope 🫣", "Okay fine… 😵"];
@@ -183,212 +131,85 @@ function prankNoButton(noBtn, yesBtn) {
     }
   };
 
-  noBtn.addEventListener("mouseenter", moveNo);
-  noBtn.addEventListener("click", (e) => {
-    e.preventDefault();
-    moveNo();
-  });
-  noBtn.addEventListener(
-    "touchstart",
-    (e) => {
-      e.preventDefault();
-      moveNo();
-    },
-    { passive: false }
-  );
+  noBtn.addEventListener("mouseenter", move);
+  noBtn.addEventListener("click", (e) => { e.preventDefault(); move(); });
+  noBtn.addEventListener("touchstart", (e) => { e.preventDefault(); move(); }, { passive: false });
 
-  setTimeout(moveNo, 250);
+  setTimeout(move, 200);
 }
 
-// ---------------------------
-// Love meter
-// ---------------------------
 function setupLoveMeter() {
   const loveMeter = document.getElementById("loveMeter");
   const loveValue = document.getElementById("loveValue");
   const extraLove = document.getElementById("extraLove");
   if (!loveMeter || !loveValue || !extraLove) return;
 
-  const setInitialPosition = () => {
-    loveMeter.value = 100;
-    loveValue.textContent = 100;
-    loveMeter.style.width = "100%";
-    extraLove.classList.add("hidden");
-    extraLove.classList.remove("super-love");
-  };
-
-  setInitialPosition();
+  loveMeter.value = 100;
+  loveValue.textContent = 100;
 
   loveMeter.addEventListener("input", () => {
-    const value = parseInt(loveMeter.value, 10);
-    loveValue.textContent = value;
+    const v = parseInt(loveMeter.value, 10);
+    loveValue.textContent = v;
 
-    if (value > 100) {
+    if (v > 100) {
       extraLove.classList.remove("hidden");
 
-      if (value >= 5000) {
+      if (v >= 5000) {
+        extraLove.textContent = config.loveMessages?.extreme || "WOOOOW 🥰🚀💝";
         extraLove.classList.add("super-love");
-        extraLove.textContent = config.loveMessages.extreme;
-      } else if (value > 1000) {
+      } else if (v > 1000) {
+        extraLove.textContent = config.loveMessages?.high || "To infinity and beyond! 🚀💝";
         extraLove.classList.remove("super-love");
-        extraLove.textContent = config.loveMessages.high;
       } else {
+        extraLove.textContent = config.loveMessages?.normal || "And beyond! 🥰";
         extraLove.classList.remove("super-love");
-        extraLove.textContent = config.loveMessages.normal;
       }
     } else {
       extraLove.classList.add("hidden");
       extraLove.classList.remove("super-love");
-      loveMeter.style.width = "100%";
     }
   });
 }
 
-// ---------------------------
-// Celebration
-// ---------------------------
 function celebrate() {
   document.querySelectorAll(".question-section").forEach((q) => q.classList.add("hidden"));
-  const celebration = document.getElementById("celebration");
-  if (!celebration) return;
-  celebration.classList.remove("hidden");
+  const section = document.getElementById("celebration");
+  if (!section) return;
+  section.classList.remove("hidden");
 
   const t = document.getElementById("celebrationTitle");
   const m = document.getElementById("celebrationMessage");
   const e = document.getElementById("celebrationEmojis");
 
-  if (t) t.textContent = config.celebration.title;
-  if (m) m.textContent = config.celebration.message;
-  if (e) e.textContent = config.celebration.emojis;
+  if (t) t.textContent = config.celebration?.title || "Yay! 🎉";
+  if (m) m.textContent = config.celebration?.message || "I love you 💖";
+  if (e) e.textContent = config.celebration?.emojis || "🎁💖🤗💝💋❤️💕";
 
-  const floating = document.querySelector(".floating-elements");
-  if (!floating) return;
+  // Heart burst
+  const container = document.querySelector(".floating-elements");
+  if (!container) return;
 
-  for (let i = 0; i < 50; i++) {
-    const heart = document.createElement("div");
-    const randomHeart = config.floatingEmojis.hearts[Math.floor(Math.random() * config.floatingEmojis.hearts.length)];
-    heart.innerHTML = randomHeart;
-    heart.className = "heart";
-    floating.appendChild(heart);
-    setRandomPosition(heart);
+  const hearts = config.floatingEmojis?.hearts || ["❤️"];
+  for (let i = 0; i < 40; i++) {
+    const d = document.createElement("div");
+    d.className = "heart";
+    d.innerHTML = hearts[Math.floor(Math.random() * hearts.length)];
+    setRandomPosition(d);
+    container.appendChild(d);
   }
 }
 
-// ---------------------------
-// Hidden surprise: type "bubu"
-// ---------------------------
 function setupHiddenSurprise() {
   const secret = "bubu";
-  let buffer = "";
+  let buf = "";
 
   document.addEventListener("keydown", (e) => {
-    buffer += (e.key || "").toLowerCase();
-    buffer = buffer.slice(-10);
+    buf += (e.key || "").toLowerCase();
+    buf = buf.slice(-12);
 
-    if (buffer.includes(secret)) {
-      buffer = "";
-      alert("💌 Surprise for Bubu: Ro Ro loves you more than 10,000% 💖");
+    if (buf.includes(secret)) {
+      buf = "";
+      alert("💌 Hidden Surprise: Ro Ro loves you more than 10,000% 💖");
     }
   });
 }
-
-// ---------------------------
-// Intro overlay + music toggle
-// (Optional elements — only if you added them)
-// ---------------------------
-function setupIntroAndMusicToggle() {
-  const overlay = document.getElementById("introOverlay");
-  const startBtn = document.getElementById("introStartBtn");
-  const musicToggle = document.getElementById("musicToggle");
-
-  // Start button: hide intro + start music
-  if (overlay && startBtn) {
-    startBtn.addEventListener("click", () => {
-      overlay.style.display = "none";
-      playMusic();
-      if (musicToggle) musicToggle.textContent = "🔇 Stop Music";
-    });
-  }
-
-  // Toggle music
-  if (musicToggle) {
-    musicToggle.addEventListener("click", () => {
-      if (!musicIsPlaying) {
-        playMusic();
-        musicToggle.textContent = "🔇 Stop Music";
-      } else {
-        stopMusic();
-        musicToggle.textContent = "🎵 Play Music";
-      }
-    });
-  }
-}
-
-// ---------------------------
-// Wire buttons (your page IDs)
-// ---------------------------
-function setupButtons() {
-  const yesBtn1 = document.getElementById("yesBtn1");
-  const noBtn1 = document.getElementById("noBtn1");
-  const nextBtn = document.getElementById("nextBtn");
-  const yesBtn3 = document.getElementById("yesBtn3");
-  const noBtn3 = document.getElementById("noBtn3");
-
-  // Q1 -> Q2
-  if (yesBtn1) yesBtn1.addEventListener("click", () => showNextQuestion(2));
-  if (noBtn1 && yesBtn1) prankNoButton(noBtn1, yesBtn1);
-
-  // Q2 -> Q3
-  if (nextBtn) nextBtn.addEventListener("click", () => showNextQuestion(3));
-
-  // Q3 -> Celebrate
-  if (yesBtn3) yesBtn3.addEventListener("click", celebrate);
-  if (noBtn3 && yesBtn3) prankNoButton(noBtn3, yesBtn3);
-}
-
-// Set texts from config (safe)
-function setTextsFromConfig() {
-  const titleEl = document.getElementById("valentineTitle");
-  if (titleEl) titleEl.textContent = `${config.valentineName}, my love...`;
-
-  const q1 = document.getElementById("question1Text");
-  const y1 = document.getElementById("yesBtn1");
-  const n1 = document.getElementById("noBtn1");
-
-  const q2 = document.getElementById("question2Text");
-  const st = document.getElementById("startText");
-  const nb = document.getElementById("nextBtn");
-
-  const q3 = document.getElementById("question3Text");
-  const y3 = document.getElementById("yesBtn3");
-  const n3 = document.getElementById("noBtn3");
-
-  if (q1) q1.textContent = config.questions.first.text;
-  if (y1) y1.textContent = config.questions.first.yesBtn;
-  if (n1) n1.textContent = config.questions.first.noBtn;
-
-  if (q2) q2.textContent = config.questions.second.text;
-  if (st) st.textContent = config.questions.second.startText;
-  if (nb) nb.textContent = config.questions.second.nextBtn;
-
-  if (q3) q3.textContent = config.questions.third.text;
-  if (y3) y3.textContent = config.questions.third.yesBtn;
-  if (n3) n3.textContent = config.questions.third.noBtn;
-}
-
-// ---------------------------
-// DOM Ready init
-// ---------------------------
-window.addEventListener("DOMContentLoaded", () => {
-  validateConfig();
-  applyTheme();
-  setTextsFromConfig();
-  createFloatingElements();
-  setupLoveMeter();
-  setupButtons();
-  setupHiddenSurprise();
-  setupIntroAndMusicToggle();
-
-  // ✅ This is the autoplay fix
-  setupFirstClickMusic();
-});

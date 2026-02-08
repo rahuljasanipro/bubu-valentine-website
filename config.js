@@ -38,6 +38,53 @@ const CONFIG = {
     emojis: "🎁💖🤗💝💋❤️💕"
   },
 
+  whyLoveReasons: [
+    "Because your smile fixes everything 😌💗",
+    "Because Banaras felt magical with you 🛕",
+    "Because you’re my safe place 🤍",
+    "Because you laugh at my dumb jokes 😄",
+    "Because you make ordinary days special ✨",
+    "Because you’re cute even when angry 😭💗",
+    "Because you’re YOU. That’s enough 💘"
+  ],
+
+  promises: [
+    "I promise to annoy you daily 😌",
+    "I promise to steal your fries 🍟",
+    "I promise to always choose you 💗",
+    "I promise more Banaras trips 🛕",
+    "I promise to hug you first 🤗",
+    "I promise to say sorry faster 😭",
+    "I promise to hype you always ✨",
+    "I promise to bring snacks 🧁",
+    "I promise to listen properly 👂",
+    "I promise to love you louder 💘",
+    "I promise to never say no to gargle again 😂",
+    "I promise movie nights 🎬"
+  ],
+
+  futureTemplates: [
+    "2026 — Another trip together 🌍",
+    "2026 — A thousand hugs unlocked 🤗",
+    "2027 — Still flirting like day one 😌",
+    "2028 — Banaras 2.0 confirmed 🛕",
+    "2030 — Still choosing you, always 💗",
+    "2035 — Anniversary celebrations on max 🎉",
+    "2040 — Still laughing at the same jokes 😄",
+    "2050 — Love level: infinite 🚀",
+    "2060 — Still together. Still us 💘"
+  ],
+
+  aiPredictionLines: [
+    "Initializing romantic intelligence…",
+    "Scanning: Banaras memories ✅",
+    "Scanning: Gargle incident trauma 😂✅",
+    "Calculating compatibility…",
+    "Result: 1000% match 💞",
+    "Recommended action: hug immediately 🤗",
+    "Warning: separation probability = 0.0001% 😈"
+  ],
+
   colors: {
     backgroundStart: "#ffafbd",
     backgroundEnd: "#ffc3a0",

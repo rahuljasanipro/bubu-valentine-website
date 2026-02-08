@@ -14,9 +14,14 @@ document.title = config.pageTitle || "Valentine 💝";
 
 /* ---------------- UTIL ---------------- */
 function showOnly(id){
+  // hide main sections
   document.querySelectorAll(".question-section").forEach(s => s.classList.add("hidden"));
+  // hide other long sections
   const t = document.getElementById("timeline");
   if (t) t.classList.add("hidden");
+  const x = document.getElementById("extras");
+  if (x) x.classList.add("hidden");
+
   const el = document.getElementById(id);
   if(el) el.classList.remove("hidden");
 }
@@ -37,6 +42,12 @@ function flashWarning(warnEl, text){
   warnEl.textContent = text;
   warnEl.classList.remove("hidden");
   setTimeout(()=> warnEl.classList.add("hidden"), 1900);
+}
+
+function sleep(ms){ return new Promise(r => setTimeout(r, ms)); }
+
+function randFrom(arr){
+  return arr[Math.floor(Math.random() * arr.length)];
 }
 
 /* ---------------- YOUTUBE MUSIC ---------------- */
@@ -134,6 +145,40 @@ function setupCursorTrail(){
   });
 }
 
+/* ---------------- CAMERA FLASH ---------------- */
+function cameraFlash(){
+  const f = document.getElementById("flashOverlay");
+  if(!f) return;
+  f.classList.remove("hidden");
+  f.classList.remove("flash"); // restart animation
+  void f.offsetWidth; // force reflow
+  f.classList.add("flash");
+  setTimeout(()=> f.classList.add("hidden"), 420);
+}
+
+/* ---------------- LIE DETECTOR OVERLAY ---------------- */
+let lieBusy = false;
+async function lieDetectorScan(message){
+  if(lieBusy) return;
+  lieBusy = true;
+
+  const wrap = document.getElementById("lieDetector");
+  const txt = document.getElementById("lieText");
+  const res = document.getElementById("lieResult");
+  if(!wrap || !txt || !res) { lieBusy = false; return; }
+
+  wrap.classList.remove("hidden");
+  txt.textContent = message || "Analyzing statement…";
+  res.textContent = "Result: Pending…";
+
+  await sleep(900);
+  res.textContent = "Result: ❌ LIE DETECTED (You actually love Ro Ro 💘)";
+  await sleep(900);
+
+  wrap.classList.add("hidden");
+  lieBusy = false;
+}
+
 /* ---------------- FAKE CHAT SIM ---------------- */
 async function runChatSim(){
   const chat = document.getElementById("chatSim");
@@ -159,7 +204,7 @@ async function runChatSim(){
     d.className = "chat-line";
     d.textContent = l;
     linesBox.appendChild(d);
-    await new Promise(r => setTimeout(r, 650));
+    await sleep(650);
   }
 
   cont.classList.remove("hidden");
@@ -169,6 +214,28 @@ async function runChatSim(){
       chat.classList.add("hidden");
       resolve(true);
     }, { once: true });
+  });
+}
+
+/* ---------------- INCOMING CALL ---------------- */
+function runIncomingCall(){
+  const scr = document.getElementById("incomingCall");
+  const accept = document.getElementById("acceptCall");
+  const decline = document.getElementById("declineCall");
+  if(!scr || !accept || !decline) return Promise.resolve(true);
+
+  scr.classList.remove("hidden");
+
+  return new Promise(resolve => {
+    accept.addEventListener("click", () => {
+      scr.classList.add("hidden");
+      resolve(true);
+    }, { once:true });
+
+    decline.addEventListener("click", () => {
+      // decline just pranks and keeps showing
+      lieDetectorScan("Decline detected… running love verification 😈");
+    });
   });
 }
 
@@ -182,7 +249,7 @@ function setupLoveMeter(){
 
   loveMeter.value = 100;
   loveValue.textContent = "100";
-  if (smart) smart.textContent = "🙂 suspicious";
+  if (smart) smart.textContent = "🙂 hmm okay";
 
   function setSmart(v){
     if(!smart) return;
@@ -217,6 +284,24 @@ function setupLoveMeter(){
   });
 }
 
+/* ---------------- CAPTCHA ---------------- */
+function setupCaptcha(onPass){
+  const check = document.getElementById("captchaCheck");
+  const btn = document.getElementById("captchaContinue");
+  const msg = document.getElementById("captchaMsg");
+  if(!check || !btn || !msg) return;
+
+  btn.addEventListener("click", ()=>{
+    if(!check.checked){
+      msg.textContent = "Please tick the checkbox 😌";
+      msg.classList.remove("hidden");
+      return;
+    }
+    msg.classList.add("hidden");
+    onPass && onPass();
+  });
+}
+
 /* ---------------- COMPAT SCAN ---------------- */
 function runCompatScan(next){
   const fill = document.getElementById("scanFill");
@@ -235,9 +320,30 @@ function runCompatScan(next){
     if(p >= 100){
       clearInterval(t);
       txt.textContent = "Compatibility: 1000% 💞 (Certified)";
-      setTimeout(next, 900);
+      setTimeout(next, 700);
     }
   }, 80);
+}
+
+/* ---------------- AI PREDICTION ---------------- */
+async function runAiPrediction(next){
+  const box = document.getElementById("aiBox");
+  const btn = document.getElementById("aiContinue");
+  if(!box || !btn) { next(); return; }
+
+  showOnly("aiPrediction");
+  box.textContent = "";
+
+  const lines = config.aiPredictionLines || [
+    "Analyzing…", "Result: 1000% match 💞"
+  ];
+
+  for(const l of lines){
+    box.textContent += l + "\n";
+    await sleep(520);
+  }
+
+  btn.onclick = () => next();
 }
 
 /* ---------------- NO BUTTON: START NORMAL -> BOUNCE -> RUN AWAY ---------------- */
@@ -251,7 +357,6 @@ function demonNoStartsNice(noBtn, yesBtn, warnEl){
   noBtn.classList.add("no-bounce");
 
   const moveAway = () => {
-    // activate runaway positioning
     runaway = true;
     noBtn.classList.remove("no-bounce");
 
@@ -264,12 +369,16 @@ function demonNoStartsNice(noBtn, yesBtn, warnEl){
     noBtn.style.transform = `rotate(${Math.random()*360}deg) scale(${0.8 + Math.random()*0.5})`;
   };
 
-  const onTry = (e) => {
+  const onTry = async (e) => {
     e.preventDefault();
     attempts++;
 
+    // Lie detector scan on "No"
+    if(attempts === 1){
+      lieDetectorScan("Statement: “No” — verifying…");
+    }
+
     if(attempts <= 2){
-      // still stays in place
       flashWarning(warnEl, "⚠️ SYSTEM: ‘No’ not accepted 😌 Try again.");
       noBtn.classList.add("no-bounce");
       return;
@@ -384,13 +493,88 @@ function setupDarkMode(){
   });
 }
 
-/* ---------------- TIMED SURPRISE POPUP ---------------- */
+/* ---------------- TIMED POPUP ---------------- */
 function setupTimedPopup(){
   setTimeout(()=>{
     const overlay = document.getElementById("introOverlay");
-    if(overlay && !overlay.classList.contains("hidden") && overlay.style.display !== "none") return;
-    window.alert("Still here? That means you like me 😌💗");
+    if(overlay && overlay.style.display !== "none") return;
+    alert("Still here? That means you like me 😌💗");
   }, 20000);
+}
+
+/* ---------------- WHY LOVE / HUGS / PROMISE WALL ---------------- */
+function setupExtras(){
+  const whyBtn = document.getElementById("whyLoveBtn");
+  const whyText = document.getElementById("whyLoveText");
+  const hugBtn = document.getElementById("hugBtn");
+  const hugCountEl = document.getElementById("hugCount");
+  const hugMsg = document.getElementById("hugMsg");
+  const wall = document.getElementById("promiseWall");
+  const shuffle = document.getElementById("shufflePromises");
+
+  let hugCount = 0;
+
+  if(whyBtn && whyText){
+    whyBtn.addEventListener("click", ()=>{
+      const reason = randFrom(config.whyLoveReasons || ["Because you’re amazing 💗"]);
+      whyText.textContent = reason;
+    });
+  }
+
+  if(hugBtn && hugCountEl && hugMsg){
+    hugBtn.addEventListener("click", ()=>{
+      hugCount++;
+      hugCountEl.textContent = String(hugCount);
+
+      const msgs = [
+        "Warm hug 🤗",
+        "Tight hug 😌",
+        "Banaras hug 🛕🤗",
+        "Ok too tight 😭",
+        "Infinity hug 🚀🤗"
+      ];
+      hugMsg.textContent = msgs[Math.min(hugCount-1, msgs.length-1)];
+    });
+  }
+
+  function renderPromises(){
+    if(!wall) return;
+    wall.innerHTML = "";
+    const list = (config.promises || []).slice();
+    // shuffle
+    for(let i=list.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      [list[i], list[j]] = [list[j], list[i]];
+    }
+    list.slice(0, 12).forEach(p=>{
+      const tile = document.createElement("div");
+      tile.className = "promise-tile";
+      tile.textContent = p;
+      tile.addEventListener("click", ()=>{
+        tile.classList.toggle("done");
+      });
+      wall.appendChild(tile);
+    });
+  }
+
+  if(shuffle){
+    shuffle.addEventListener("click", renderPromises);
+  }
+  renderPromises();
+}
+
+/* ---------------- FUTURE TIMELINE GENERATOR ---------------- */
+function setupFutureGenerator(){
+  const btn = document.getElementById("genFutureBtn");
+  const list = document.getElementById("futureList");
+  if(!btn || !list) return;
+
+  btn.addEventListener("click", ()=>{
+    const item = document.createElement("div");
+    item.className = "future-item";
+    item.textContent = randFrom(config.futureTemplates || ["Future: still together 💘"]);
+    list.prepend(item);
+  });
 }
 
 /* ---------------- MAIN INIT ---------------- */
@@ -398,30 +582,6 @@ window.addEventListener("DOMContentLoaded", async () => {
   setupDarkMode();
   setupCursorTrail();
   setupTimedPopup();
-
-  // Set texts from config
-  const title = document.getElementById("valentineTitle");
-  if(title) title.textContent = `${config.valentineName || "My Love"}, my love...`;
-
-  document.getElementById("question1Text").textContent = config.questions?.first?.text || "Do you like me?";
-  document.getElementById("yesBtn1").textContent = config.questions?.first?.yesBtn || "Yes";
-  document.getElementById("noBtn1").textContent = config.questions?.first?.noBtn || "No";
-  document.getElementById("secretAnswerBtn").textContent = "Secret 💌";
-
-  document.getElementById("question2Text").textContent = config.questions?.second?.text || "How much do you love me?";
-  document.getElementById("startText").textContent = config.questions?.second?.startText || "This much!";
-  document.getElementById("nextBtn").textContent = config.questions?.second?.nextBtn || "Next ❤️";
-
-  document.getElementById("question3Text").textContent = config.questions?.third?.text || "Will you be my Valentine?";
-  document.getElementById("yesBtn3").textContent = config.questions?.third?.yesBtn || "Yes!";
-  document.getElementById("noBtn3").textContent = config.questions?.third?.noBtn || "No";
-
-  // Floating emojis
-  createFloating();
-
-  // Fake chat (runs after Start)
-  const startBtn = document.getElementById("introStartBtn");
-  const overlay = document.getElementById("introOverlay");
 
   // Music toggle
   const musicToggle = document.getElementById("musicToggle");
@@ -437,32 +597,56 @@ window.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
-  // Easter egg: title click
+  // Set texts from config
+  const title = document.getElementById("valentineTitle");
+  if(title) title.textContent = `${config.valentineName || "My Love"}, my love...`;
+
+  // Title easter egg
   if(title){
     title.style.cursor = "pointer";
-    title.addEventListener("click", ()=> window.alert("💌 Secret unlocked:\nYou are my favorite human. Always."));
+    title.addEventListener("click", ()=> alert("💌 Secret unlocked:\nYou are my favorite human. Always."));
   }
+
+  // Fill question text
+  document.getElementById("question1Text").textContent = config.questions?.first?.text || "Do you like me?";
+  document.getElementById("yesBtn1").textContent = config.questions?.first?.yesBtn || "Yes";
+  document.getElementById("noBtn1").textContent = config.questions?.first?.noBtn || "No";
+
+  document.getElementById("question2Text").textContent = config.questions?.second?.text || "How much do you love me?";
+  document.getElementById("startText").textContent = config.questions?.second?.startText || "This much!";
+  document.getElementById("nextBtn").textContent = config.questions?.second?.nextBtn || "Next ❤️";
+
+  document.getElementById("question3Text").textContent = config.questions?.third?.text || "Will you be my Valentine?";
+  document.getElementById("yesBtn3").textContent = config.questions?.third?.yesBtn || "Yes!";
+  document.getElementById("noBtn3").textContent = config.questions?.third?.noBtn || "No";
+
+  // Floating emojis
+  createFloating();
 
   // Love meter
   setupLoveMeter();
+
+  // Extras setup
+  setupExtras();
+  setupFutureGenerator();
 
   // Fireworks
   const fw = setupFireworks();
 
   // Start flow
+  const startBtn = document.getElementById("introStartBtn");
+  const overlay = document.getElementById("introOverlay");
+
   if(startBtn){
     startBtn.addEventListener("click", async ()=>{
-      // hide overlay
       overlay.style.display = "none";
 
-      // play music (user gesture)
       playYtMusic();
       if(musicToggle) musicToggle.textContent = "🔇 Stop Music";
 
-      // chat sim
       await runChatSim();
+      await runIncomingCall();
 
-      // show question1
       showOnly("question1");
     });
   }
@@ -472,16 +656,23 @@ window.addEventListener("DOMContentLoaded", async () => {
   const no1 = document.getElementById("noBtn1");
   const warn1 = document.getElementById("systemWarning");
 
-  yes1.addEventListener("click", ()=> showOnly("question2"));
+  // Yes -> CAPTCHA first
+  yes1.addEventListener("click", ()=> showOnly("captcha"));
+
   demonNoStartsNice(no1, yes1, warn1);
 
   document.getElementById("secretAnswerBtn").addEventListener("click", ()=>{
-    window.alert(config.questions?.first?.secretAnswer || "I love you ❤️");
+    alert(config.questions?.first?.secretAnswer || "I love you ❤️");
   });
 
-  // Q2 next -> compat scan -> Q3
+  // CAPTCHA pass -> Q2
+  setupCaptcha(()=> showOnly("question2"));
+
+  // Q2 next -> compat scan -> AI prediction -> Q3
   document.getElementById("nextBtn").addEventListener("click", ()=>{
-    runCompatScan(()=> showOnly("question3"));
+    runCompatScan(async ()=>{
+      await runAiPrediction(()=> showOnly("question3"));
+    });
   });
 
   // Q3
@@ -491,8 +682,9 @@ window.addEventListener("DOMContentLoaded", async () => {
 
   demonNoStartsNice(no3, yes3, warn3);
 
+  // YES -> camera flash + lock + celebration + fireworks
   yes3.addEventListener("click", ()=>{
-    // lock screen then celebration
+    cameraFlash();
     showLockScreenThen(()=>{
       showOnly("celebration");
 
@@ -502,11 +694,8 @@ window.addEventListener("DOMContentLoaded", async () => {
 
       ct.textContent = config.celebration?.title || "Yay! 🎉";
       ce.textContent = config.celebration?.emojis || "🎁💖🤗💝💋❤️💕";
-
-      // typed love letter
       typeText(cm, config.celebration?.message || "Now come get your gift… 💋", 32);
 
-      // fireworks
       if(fw) fw.fire();
     });
   });
@@ -518,6 +707,23 @@ window.addEventListener("DOMContentLoaded", async () => {
     seeTl.addEventListener("click", ()=>{
       tl.classList.remove("hidden");
       tl.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }
+
+  // Extras open
+  const openExtras = document.getElementById("openExtrasBtn");
+  const extras = document.getElementById("extras");
+  const back = document.getElementById("backFromExtras");
+  if(openExtras && extras){
+    openExtras.addEventListener("click", ()=>{
+      extras.classList.remove("hidden");
+      extras.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }
+  if(back && extras){
+    back.addEventListener("click", ()=>{
+      extras.classList.add("hidden");
+      showOnly("celebration");
     });
   }
 });

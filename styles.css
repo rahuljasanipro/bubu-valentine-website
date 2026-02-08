@@ -437,14 +437,20 @@ body{
     overflow: hidden;
     cursor: crosshair;
 }
+
+/* FIX: BIGGER, SLOWER HEARTS FOR EASY WIN */
 .game-heart-item{
     position: absolute;
-    font-size: 36px;
+    font-size: 60px; /* HUGE HEART */
     user-select: none;
     cursor: pointer;
-    animation: fallDown 2.5s linear forwards;
+    /* Slower animation (4s instead of 2.5s) */
+    animation: fallDown 4s linear forwards;
+    padding: 15px; /* Huge click area */
+    z-index: 21001;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
 }
-@keyframes fallDown{ from{top:-50px;} to{top:110%;} }
+@keyframes fallDown{ from{top:-80px;} to{top:110%;} }
 
 /* 2. Certificate Overlay */
 .certificate-overlay{
@@ -499,12 +505,17 @@ body{
     text-align: left;
 }
 .coupon-ticket:hover{ background: #fff5f5; border-color: var(--btn); }
+
+/* FIX: INFINITY COUPON STYLE */
 .coupon-ticket.redeemed{
-    opacity: 0.5;
-    text-decoration: line-through;
-    background: #eee;
-    border-color: #aaa;
+    background: #fff9c4; /* Gold/Yellowish for infinity */
+    border: 2px solid #ffd700;
+    box-shadow: 0 4px 10px rgba(255, 215, 0, 0.3);
+    opacity: 1; /* Do not fade out */
+    text-decoration: none; /* No strikethrough */
+    transform: scale(1.02);
 }
+
 .coupon-title{ font-weight: 900; font-size: 16px; margin-bottom: 4px; }
 .coupon-desc{ font-size: 13px; opacity: 0.7; }
 

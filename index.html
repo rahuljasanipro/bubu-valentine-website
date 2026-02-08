@@ -29,7 +29,7 @@
 
   <!-- Top controls -->
   <div class="top-controls">
-    <button id="darkModeToggle" class="chip" type="button">🌙 Night Skincare Mode</button>
+    <button id="modeToggle" class="chip" type="button">🧴 Sunscreen Mode</button>
     <button id="musicToggle" class="chip" type="button">🎵 Play Music</button>
   </div>
 
@@ -99,11 +99,13 @@
       <p class="question-text">Quick verification 😌</p>
       <div class="captcha-box">
         <div class="captcha-title">✅ Verify you’re not a robot in love</div>
+
         <label class="captcha-row">
           <input id="captchaCheck" type="checkbox" />
           <span>I am deeply in love 💗</span>
         </label>
-        <button id="captchaContinue" class="btn btn-next" type="button">Continue ❤️</button>
+
+        <button id="captchaContinue" class="btn btn-next captcha-btn" type="button">Continue ❤️</button>
         <div id="captchaMsg" class="captcha-msg hidden"></div>
       </div>
     </section>
@@ -118,7 +120,10 @@
           <span class="meter-value"><span id="loveValue">100</span>%</span>
         </div>
 
-        <input id="loveMeter" class="love-meter" type="range" min="0" max="10000" value="100" />
+        <div class="meter-slider-wrap">
+          <input id="loveMeter" class="love-meter" type="range" min="0" max="100000" value="100" />
+        </div>
+
         <div id="extraLove" class="extra-love hidden"></div>
         <div id="smartReaction" class="smart-reaction">🙂</div>
       </div>
@@ -162,8 +167,7 @@
 
       <div class="celebrate-actions">
         <button id="seeTimelineBtn" class="btn btn-next" type="button">See Our Timeline 💗</button>
-        <button id="openExtrasBtn" class="btn btn-next" type="button">Tap for a Surprise 🎁</button>
-        <button id="startOverBtn" class="btn btn-no" type="button">Start Over 🔁</button>
+        <button id="openExtrasBtn" class="btn btn-next" type="button">Open Extras ✨</button>
       </div>
     </section>
 
@@ -177,24 +181,22 @@
 
       <div class="future-wrap">
         <div class="future-title">🔮 Future Timeline Generator</div>
-        <button id="genFutureBtn" class="btn btn-next" type="button">Generate Future 💫</button>
-        <div id="futureList" class="future-list"></div>
+        <button id="genFutureBtn" class="btn btn-next" type="button">Show Future 💫</button>
+        <div id="futureOne" class="future-one"></div>
       </div>
     </section>
 
-    <!-- Extras (Why Love / Hugs / Promise Wall) -->
+    <!-- Extras -->
     <section id="extras" class="extras hidden">
-      <h2 class="timeline-title">Bonus Zone ✨</h2>
+      <h2 class="timeline-title">Extras ✨</h2>
 
       <div class="extras-grid">
-        <!-- Why I love you -->
         <div class="extra-card">
           <div class="extra-title">💌 Why I Love You</div>
           <div id="whyLoveText" class="extra-text">Click for a reason 😌</div>
           <button id="whyLoveBtn" class="btn btn-next" type="button">Give me a reason 💗</button>
         </div>
 
-        <!-- Hug counter -->
         <div class="extra-card">
           <div class="extra-title">🤗 Hug Counter</div>
           <div class="hug-count">Hugs: <span id="hugCount">0</span></div>
@@ -202,7 +204,6 @@
           <button id="hugBtn" class="btn btn-next" type="button">Hug 🤗</button>
         </div>
 
-        <!-- Promise wall -->
         <div class="extra-card extra-wide">
           <div class="extra-title">🧱 Promise Wall</div>
           <div id="promiseWall" class="promise-wall"></div>
@@ -222,7 +223,6 @@
   <!-- YouTube IFrame API -->
   <script src="https://www.youtube.com/iframe_api"></script>
 
-  <!-- Config + Script -->
   <script src="config.js"></script>
   <script src="script.js"></script>
 </body>

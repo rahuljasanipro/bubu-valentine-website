@@ -18,7 +18,7 @@
       <h1 class="intro-title">Hey Bubu 👀💗</h1>
       <p class="intro-subtitle">Before you enter… promise you’ll smile 😌</p>
 
-      <button id="introStartBtn" type="button">Start 💖</button>
+      <button id="introStartBtn" class="btn btn-next" type="button">Start 💖</button>
 
       <p class="intro-hint">Psst: there’s a hidden surprise inside 👀</p>
     </div>
@@ -27,14 +27,26 @@
   <!-- Floating emojis -->
   <div class="floating-elements"></div>
 
-  <!-- Top-right controls -->
+  <!-- Top controls -->
   <div class="top-controls">
     <button id="darkModeToggle" class="chip" type="button">🌙 Dark</button>
     <button id="musicToggle" class="chip" type="button">🎵 Play Music</button>
   </div>
 
+  <!-- Hidden YouTube player -->
+  <div id="ytMusic" style="position:fixed; left:-9999px; top:-9999px; width:1px; height:1px;"></div>
+
   <!-- Fireworks canvas -->
   <canvas id="fireworksCanvas" class="fireworks-canvas"></canvas>
+
+  <!-- Fake Chat Intro -->
+  <section id="chatSim" class="chat-sim hidden">
+    <div class="chat-card">
+      <div class="chat-header">💬 Ro Ro & Bubu</div>
+      <div id="chatLines"></div>
+      <button id="chatContinue" class="btn btn-next hidden" type="button">Continue 💗</button>
+    </div>
+  </section>
 
   <!-- Main container -->
   <main class="container">
@@ -49,9 +61,7 @@
         <button id="noBtn1" class="btn btn-no" type="button">No</button>
       </div>
 
-      <button id="secretAnswerBtn" class="btn btn-secret" type="button">
-        Secret 💌
-      </button>
+      <button id="secretAnswerBtn" class="btn btn-secret" type="button">Secret 💌</button>
 
       <div id="systemWarning" class="system-warning hidden"></div>
     </section>
@@ -68,20 +78,20 @@
 
         <input id="loveMeter" class="love-meter" type="range" min="0" max="10000" value="100" />
         <div id="extraLove" class="extra-love hidden"></div>
+
+        <div id="smartReaction" class="smart-reaction">🙂</div>
       </div>
 
       <button id="nextBtn" class="btn btn-next" type="button">Next ❤️</button>
     </section>
 
-    <!-- MINI GAME: Catch Hearts -->
-    <section id="minigame" class="question-section hidden">
-      <p class="question-text">Quick game 😄 Catch <b>5 hearts</b> to unlock the final question 💘</p>
-      <div class="game-ui">
-        <div class="game-badge">Caught: <span id="caughtCount">0</span>/5</div>
-        <button id="startGameBtn" class="btn btn-next" type="button">Start Game 💞</button>
+    <!-- Compatibility Meter -->
+    <section id="compat" class="question-section hidden">
+      <h2 class="scan-title">Couple Compatibility Scan 💞</h2>
+      <div class="scan-bar">
+        <div id="scanFill"></div>
       </div>
-      <div id="gameArea" class="game-area"></div>
-      <div id="gameHint" class="game-hint">Tip: click/tap the hearts fast!</div>
+      <div id="scanText" class="scan-text">Analyzing love patterns…</div>
     </section>
 
     <!-- Question 3 -->
@@ -101,18 +111,29 @@
       <h2 id="celebrationTitle" class="celebrate-title">Yay!</h2>
       <p id="celebrationMessage" class="celebrate-msg">Message</p>
       <div id="celebrationEmojis" class="celebrate-emojis">🎁💖🤗💝💋❤️💕</div>
+      <button id="seeTimelineBtn" class="btn btn-next" type="button">See Our Timeline 💗</button>
+    </section>
+
+    <!-- Memory Timeline Scroll -->
+    <section id="timeline" class="timeline hidden">
+      <h2 class="timeline-title">Our Story So Far 💗</h2>
+      <div class="tl-item">💬 First chat — <b>3rd Nov</b></div>
+      <div class="tl-item">🛕 First meet — <b>Banaras Trip 17th Jan</b></div>
+      <div class="tl-item">😂 First fight — <b>When you said no to gargle</b></div>
+      <div class="tl-item">💘 Now — <b>Valentine</b></div>
     </section>
   </main>
 
-  <!-- Config -->
+  <!-- Lock Screen -->
+  <section id="lockScreen" class="lock-screen hidden">
+    💘 Access to Ro Ro Granted 💘
+  </section>
+
+  <!-- YouTube IFrame API -->
+  <script src="https://www.youtube.com/iframe_api"></script>
+
+  <!-- Config + Script -->
   <script src="config.js"></script>
-
-  <!-- Local audio -->
-  <audio id="bgMusic" preload="auto" loop playsinline controls style="display:none;">
-    <source src="assets/music.mp3" type="audio/mpeg">
-  </audio>
-
-  <!-- Script -->
   <script src="script.js"></script>
 </body>
 </html>

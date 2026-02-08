@@ -42,6 +42,13 @@ function flashWarning(warnEl, text){
 }
 
 function sleep(ms){ return new Promise(r => setTimeout(r, ms)); }
+// Fisher-Yates Shuffle for better randomness
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
 function randFrom(arr){ return arr[Math.floor(Math.random() * arr.length)]; }
 
 /* ---------------- SUNSCREEN / SKINCARE MODE ---------------- */
@@ -282,12 +289,10 @@ function setupLoveMeter(){
   }
 
   function updateInfinityBar(v){
-    // Start expanding after 100
     if(v <= 100){
       loveMeter.style.width = "100%";
       return;
     }
-    // Expand up to +200% extra width max
     const overflow = Math.min(1, (v - 100) / 5000);
     const extra = overflow * (window.innerWidth * 0.8);
     loveMeter.style.width = `calc(100% + ${extra}px)`;
@@ -295,8 +300,6 @@ function setupLoveMeter(){
 
   loveMeter.addEventListener("input", ()=>{
     const v = parseInt(loveMeter.value, 10);
-
-    // show ∞ vibe at huge values
     if(v >= 50000){
       loveValue.textContent = "∞";
     }else{
@@ -331,7 +334,6 @@ function setupLoveMeter(){
   window.addEventListener("resize", ()=>{
     const v = parseInt(loveMeter.value, 10);
     if(v > 100) {
-      // recompute width on resize
       const overflow = Math.min(1, (v - 100) / 5000);
       const extra = overflow * (window.innerWidth * 0.8);
       loveMeter.style.width = `calc(100% + ${extra}px)`;
@@ -531,7 +533,7 @@ function setupTimedPopup(){
   setTimeout(()=>{
     const overlay = document.getElementById("introOverlay");
     if(overlay && overlay.style.display !== "none") return;
-    // alert("Still here? That means you like me 😌💗"); // Removed to be less annoying
+    // alert("Still here? That means you like me 😌💗");
   }, 20000);
 }
 
@@ -546,11 +548,29 @@ function setupExtras(){
   const shuffle = document.getElementById("shufflePromises");
 
   let hugCount = 0;
+  
+  // LOGIC FIX: Create a shuffled playlist of reasons
+  let reasonPool = []; 
+  let reasonIndex = 0;
 
   if(whyBtn && whyText){
+    // Initialize pool
+    reasonPool = (config.whyLoveReasons || ["You are amazing"]).slice();
+    shuffleArray(reasonPool);
+
     whyBtn.addEventListener("click", ()=>{
-      const reason = randFrom(config.whyLoveReasons || ["Because you’re amazing 💗"]);
+      // Get current reason
+      const reason = reasonPool[reasonIndex];
       whyText.textContent = reason;
+      
+      // Advance index
+      reasonIndex++;
+      
+      // If we used all reasons, reshuffle and start over
+      if(reasonIndex >= reasonPool.length){
+        reasonIndex = 0;
+        shuffleArray(reasonPool);
+      }
     });
   }
 
@@ -559,7 +579,6 @@ function setupExtras(){
       hugCount++;
       hugCountEl.textContent = String(hugCount);
 
-      // Expanded to 30 options as requested
       const msgs = [
         "Warm hug 🤗",
         "Tight hug 😌",
@@ -593,8 +612,6 @@ function setupExtras(){
         "Goodnight hug 🌙"
       ];
       
-      // Cycle through messages or pick random? 
-      // Let's cycle but loop back if count exceeds length
       const index = (hugCount - 1) % msgs.length;
       hugMsg.textContent = msgs[index];
     });
@@ -604,10 +621,9 @@ function setupExtras(){
     if(!wall) return;
     wall.innerHTML = "";
     const list = (config.promises || []).slice();
-    for(let i=list.length-1;i>0;i--){
-      const j = Math.floor(Math.random()*(i+1));
-      [list[i], list[j]] = [list[j], list[i]];
-    }
+    // Use our new shuffle helper
+    shuffleArray(list);
+    
     list.slice(0, 12).forEach(p=>{
       const tile = document.createElement("div");
       tile.className = "promise-tile";
@@ -663,11 +679,10 @@ window.addEventListener("DOMContentLoaded", async () => {
     });
   }
   
-  // START OVER BUTTON LOGIC - FIXED
+  // Start Over button
   const startOverBtn = document.getElementById("startOverBtn");
   if(startOverBtn){
      startOverBtn.addEventListener("click", ()=>{
-         // Force a hard reload from server/cache
          window.location.href = window.location.href;
      });
   }

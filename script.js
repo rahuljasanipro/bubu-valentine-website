@@ -1,3 +1,8 @@
+/* FORCE FIX APPLIED: 
+   Password is hardcoded to "1111" in this file 
+   to bypass any config.js errors.
+*/
+
 const config = window.VALENTINE_CONFIG || {};
 document.title = config.pageTitle || "Valentine 💝";
 
@@ -44,6 +49,7 @@ function flashWarning(warnEl, text){
 function sleep(ms){ return new Promise(r => setTimeout(r, ms)); }
 
 function shuffleArray(array) {
+  if(!array) return;
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [array[i], array[j]] = [array[j], array[i]];
@@ -594,10 +600,14 @@ function setupExtras(){
 
   if(passBtn && passInput && startBtn){
      const checkPass = () => {
-        // Convert both input and config password to Strings for safe comparison
+        // --- FORCE FIX START ---
+        // We trim the input so "1111 " works as "1111".
+        // We treat everything as string so 1111 == "1111".
         const val = passInput.value.trim().toString();
-        // Fallback to "1402" if config is missing
-        const correctVal = (config.passcode || "1402").toString(); 
+        
+        // HARDCODED OVERRIDE:
+        // This ensures "1111" ALWAYS works, even if config.js is broken.
+        const correctVal = "1111"; 
         
         if(val === correctVal){
            // Unlock
@@ -610,6 +620,7 @@ function setupExtras(){
            passInput.classList.add("error-shake");
            setTimeout(()=> passInput.classList.remove("error-shake"), 300);
         }
+        // --- FORCE FIX END ---
      };
 
      passBtn.addEventListener("click", checkPass);

@@ -46,6 +46,36 @@
       <div class="lie-result" id="lieResult">Result: Pending…</div>
     </div>
   </div>
+  
+  <div id="gameOverlay" class="game-overlay hidden">
+    <div class="game-ui">
+      <div class="game-score">Score: <span id="gameScore">0</span>/10</div>
+      <div class="game-timer">Time: <span id="gameTimer">15</span>s</div>
+      <div class="game-msg" id="gameMsg">Catch the Hearts! 💖</div>
+      <button id="startGameBtn" class="btn btn-yes">Start Game 🏁</button>
+      <button id="closeGameBtn" class="btn btn-no hidden">Close</button>
+    </div>
+    <div id="gameArea" class="game-area"></div>
+  </div>
+
+  <div id="certificateOverlay" class="certificate-overlay hidden">
+    <div class="certificate-frame">
+      <div class="cert-header">🏆 Certificate of Love</div>
+      <div class="cert-body" id="certBody">Awarded to Bubu</div>
+      <div class="cert-sign" id="certSign">Signed: Ro Ro</div>
+      <div class="cert-date" id="certDate">Date: Feb 14</div>
+      <button id="closeCertBtn" class="btn btn-next" style="margin-top:20px;">Keep it safe 💖</button>
+    </div>
+  </div>
+  
+  <div id="couponsOverlay" class="coupons-overlay hidden">
+    <div class="coupons-card">
+      <h2 style="margin-top:0;">🎟️ Love Coupons</h2>
+      <p style="opacity:0.8; margin-bottom:15px;">Tap to redeem (One time use only! 😈)</p>
+      <div id="couponsGrid" class="coupons-grid"></div>
+      <button id="closeCouponsBtn" class="btn btn-no" style="margin-top:15px;">Close</button>
+    </div>
+  </div>
 
   <section id="chatSim" class="chat-sim hidden">
     <div class="chat-card">
@@ -191,6 +221,24 @@
           <div class="hug-count">Hugs: <span id="hugCount">0</span></div>
           <div id="hugMsg" class="extra-text">Tap to collect hugs!</div>
           <button id="hugBtn" class="btn btn-next" type="button">Hug 🤗</button>
+        </div>
+        
+        <div class="extra-card">
+            <div class="extra-title">🎟️ Love Coupons</div>
+            <div class="extra-text">Redeem special treats</div>
+            <button id="openCouponsBtn" class="btn btn-next" type="button">Open Wallet 👛</button>
+        </div>
+
+        <div class="extra-card">
+            <div class="extra-title">🎮 Catch My Heart</div>
+            <div class="extra-text">Catch 10 hearts to win!</div>
+            <button id="openGameBtn" class="btn btn-next" type="button">Play Game 🏁</button>
+        </div>
+
+        <div class="extra-card extra-wide">
+            <div class="extra-title">🏆 Your Award</div>
+            <div class="extra-text">You earned this for being amazing.</div>
+            <button id="openCertBtn" class="btn btn-next" type="button">View Certificate 📜</button>
         </div>
 
         <div class="extra-card extra-wide">

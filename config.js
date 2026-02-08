@@ -1,7 +1,3 @@
-// ============================================
-// 💝 CUSTOMIZE YOUR VALENTINE'S WEBSITE HERE 💝
-// ============================================
-
 const CONFIG = {
   valentineName: "Bubu",
   pageTitle: "Bubu 💗 Ro Ro",
@@ -48,13 +44,6 @@ const CONFIG = {
     buttonBackground: "#ff6b6b",
     buttonHover: "#ff8787",
     textColor: "#ff4757"
-  },
-
-  animations: {
-    floatDuration: "15s",
-    floatDistance: "50px",
-    bounceSpeed: "0.5s",
-    heartExplosionSize: 1.5
   }
 };
 

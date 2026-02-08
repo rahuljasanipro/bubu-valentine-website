@@ -1,215 +1,118 @@
-:root {
-  --bg1: #ffafbd;
-  --bg2: #ffc3a0;
-  --btn: #ff6b6b;
-  --btnHover: #ff8787;
-  --text: #ff4757;
+:root{
+  --bg1:#ffafbd;
+  --bg2:#ffc3a0;
+  --btn:#ff6b6b;
+  --btnHover:#ff8787;
+  --text:#ff4757;
+  --card: rgba(255,255,255,0.82);
+  --shadow: 0 20px 60px rgba(0,0,0,0.18);
 }
 
-* { box-sizing: border-box; }
-body {
-  margin: 0;
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  min-height: 100vh;
-  overflow-x: hidden;
+body{
   background: linear-gradient(135deg, var(--bg1), var(--bg2));
+  color: #222;
 }
 
-.container {
-  width: min(720px, 92vw);
-  margin: 90px auto 80px;
-  background: rgba(255,255,255,0.82);
-  border-radius: 24px;
-  padding: 28px 20px 30px;
-  box-shadow: 0 18px 60px rgba(0,0,0,0.18);
-  backdrop-filter: blur(6px);
-  text-align: center;
-  position: relative;
-  z-index: 2;
+body.dark{
+  --card: rgba(20,20,24,0.85);
+  color: #f2f2f2;
+  background: radial-gradient(circle at top, #2b2b35, #121218);
 }
 
-.title {
-  margin: 0 0 16px;
-  color: var(--text);
-  font-size: clamp(26px, 3.2vw, 38px);
-  font-weight: 800;
+body.dark .container,
+body.dark .intro-card{
+  background: var(--card);
+  color:#f2f2f2;
 }
 
-.question-text {
-  font-size: 18px;
-  margin: 16px 0 18px;
-}
-
-.btn-row {
+.top-controls{
+  position: fixed;
+  top: 14px;
+  right: 14px;
   display: flex;
-  gap: 12px;
-  justify-content: center;
-  flex-wrap: wrap;
+  gap: 10px;
+  z-index: 9999;
 }
 
-.btn {
-  border: none;
-  border-radius: 14px;
-  padding: 12px 18px;
+.chip{
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 0;
   cursor: pointer;
-  font-weight: 800;
-  background: var(--btn);
-  color: white;
-  transition: transform 0.12s ease, background 0.12s ease;
+  background: rgba(255,255,255,0.7);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+  font-weight: 600;
 }
+body.dark .chip{ background: rgba(30,30,40,0.75); color:#fff; }
 
-.btn:hover { background: var(--btnHover); transform: translateY(-1px); }
-.btn:active { transform: translateY(0px) scale(0.99); }
-
-.btn-secret {
-  margin-top: 16px;
-  background: rgba(255, 255, 255, 0.9);
-  color: #333;
-  border: 2px solid rgba(0,0,0,0.08);
-}
-
-.btn-next { margin-top: 18px; }
-
-.hidden { display: none; }
-
-/* Love meter */
-.meter-wrap {
-  margin: 18px auto 6px;
-  width: min(560px, 92%);
-  text-align: left;
-}
-
-.meter-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  margin-bottom: 10px;
-}
-
-.love-meter {
-  width: 100%;
-}
-
-.extra-love {
-  margin-top: 10px;
+.system-warning{
+  margin-top: 14px;
+  padding: 12px 14px;
+  border-radius: 14px;
   font-weight: 700;
+  background: rgba(255, 77, 77, 0.18);
+  border: 1px solid rgba(255, 77, 77, 0.35);
+  color: #ff3b3b;
 }
+body.dark .system-warning{ color:#ff6b6b; }
 
-.extra-love.super-love {
-  font-size: 18px;
-}
-
-/* Floating emojis */
-.floating-elements {
+.fireworks-canvas{
   position: fixed;
   inset: 0;
   pointer-events: none;
-  z-index: 1;
+  z-index: 9998;
 }
 
-.heart, .bear {
-  position: absolute;
-  bottom: -40px;
-  font-size: 24px;
-  animation: floatUp linear infinite;
-  opacity: 0.75;
-}
-
-@keyframes floatUp {
-  0% { transform: translateY(0) translateX(0); }
-  100% { transform: translateY(-110vh) translateX(60px); }
-}
-
-/* Music toggle */
-.music-toggle {
-  position: fixed;
-  top: 16px;
-  right: 16px;
-  z-index: 3;
-  border: none;
-  border-radius: 14px;
-  padding: 10px 14px;
-  cursor: pointer;
-  font-weight: 800;
-  background: rgba(255,255,255,0.86);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.18);
-}
-
-/* Celebration */
-.celebrate-title {
-  margin: 10px 0 10px;
-  color: var(--text);
-}
-.celebrate-msg { margin: 0 0 14px; }
-.celebrate-emojis { font-size: 26px; }
-
-/* Intro overlay */
-.intro-overlay {
-  position: fixed;
-  inset: 0;
-  display: flex;
-  align-items: center;
+.game-ui{
+  display:flex;
+  align-items:center;
   justify-content: center;
-  background: rgba(0,0,0,0.55);
-  z-index: 9999;
-  padding: 20px;
+  gap: 14px;
+  margin: 10px 0 16px;
 }
-
-.intro-card {
-  width: min(560px, 95vw);
-  background: rgba(255, 255, 255, 0.92);
-  border-radius: 24px;
-  padding: 26px 18px 24px;
-  text-align: center;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.25);
-  backdrop-filter: blur(6px);
+.game-badge{
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.6);
+  backdrop-filter: blur(10px);
+  font-weight: 700;
 }
+body.dark .game-badge{ background: rgba(30,30,40,0.6); }
 
-.intro-photos {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 14px;
-}
-
-.intro-photo-couple {
-  width: 200px;
-  height: 200px;
-  object-fit: cover;
+.game-area{
+  position: relative;
+  width: min(680px, 92vw);
+  height: 320px;
+  margin: 0 auto;
   border-radius: 22px;
-  border: 5px solid white;
-  box-shadow: 0 12px 30px rgba(0,0,0,0.18);
+  background: rgba(255,255,255,0.45);
+  backdrop-filter: blur(10px);
+  overflow: hidden;
+  box-shadow: var(--shadow);
 }
+body.dark .game-area{ background: rgba(30,30,40,0.55); }
 
-.intro-title {
-  margin: 10px 0 6px;
-  color: var(--text);
-  font-size: 34px;
-  font-weight: 900;
-}
-
-.intro-subtitle { margin: 0 0 16px; opacity: 0.85; }
-
-.intro-start-btn {
-  padding: 12px 18px;
-  border: none;
-  border-radius: 14px;
+.game-heart{
+  position:absolute;
+  font-size: 28px;
   cursor: pointer;
-  font-weight: 900;
-  background: var(--btn);
-  color: white;
+  user-select: none;
+  transform: translate(-50%, -50%);
+  animation: floaty 2.6s ease-in-out infinite;
+}
+@keyframes floaty{
+  0%{ transform: translate(-50%, -50%) scale(1); opacity: .95; }
+  50%{ transform: translate(-50%, -60%) scale(1.12); opacity: 1; }
+  100%{ transform: translate(-50%, -50%) scale(1); opacity: .95; }
 }
 
-.intro-start-btn:hover { background: var(--btnHover); }
-
-.intro-hint {
-  margin-top: 14px;
-  font-size: 12px;
-  opacity: 0.7;
+.game-hint{
+  text-align:center;
+  margin-top: 10px;
+  opacity: 0.75;
+  font-weight: 600;
 }
 
-.yt-player {
-  position: fixed;
-  left: -9999px;
-  top: -9999px;
-}
+/* Ensure hidden works */
+.hidden{ display:none !important; }

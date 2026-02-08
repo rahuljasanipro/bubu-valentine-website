@@ -71,7 +71,7 @@ body{
   right: 14px;
   display:flex;
   gap: 10px;
-  z-index: 9999;
+  z-index: 11000; /* FIXED: Increased to be ABOVE the intro screen (was 9999) */
 }
 
 .chip{
@@ -596,4 +596,46 @@ body.shake{ animation: shakeAnim .25s ease-in-out; }
   .certificate-frame { padding: 20px; border-width: 4px; }
   .cert-header { font-size: 20px; }
   .cert-body { font-size: 16px; }
+}
+
+/* Night Skincare mode */
+body.skincare{
+  background: radial-gradient(circle at top, #2b2b35, #121218);
+  color: #f2f2f2;
+}
+body.skincare .question-section,
+body.skincare .timeline,
+body.skincare .extras,
+body.skincare .intro-card{
+  background: rgba(20,20,24,0.85);
+  color: #f2f2f2;
+}
+body.skincare .chip{
+  background: rgba(30,30,40,0.8);
+  color: #fff;
+}
+body.skincare .btn-no{
+  background: #333;
+  color: #eee;
+}
+body.skincare .chat-card{
+  background: rgba(20,20,24,0.9);
+  color: #f2f2f2;
+}
+body.skincare .scan-bar{ background: rgba(255,255,255,0.15); }
+body.skincare .captcha-row,
+body.skincare .future-one,
+body.skincare .extra-card,
+body.skincare .promise-tile{
+  background: rgba(255,255,255,0.08);
+  color: #f2f2f2;
+}
+body.skincare .coupon-ticket{
+   background: rgba(255,255,255,0.08);
+   border-color: #555;
+   color: #f2f2f2;
+}
+body.skincare .coupon-ticket.redeemed{
+   background: #ffd700;
+   color: #222;
 }

@@ -1,6 +1,6 @@
 const CONFIG = {
   // 🔑 PASSWORD TO UNLOCK THE SITE
-  passcode: "1111", 
+  passcode: "1111",
 
   valentineName: "Bubu",
   pageTitle: "Bubu 💗 Ro Ro",
@@ -82,7 +82,6 @@ const CONFIG = {
     date: "February 14, 2026"
   },
 
-  // Ordered, one-at-a-time timeline from 2026 → 2060
   futureTimelineOrdered: [
     "2026 — More trips together 🌍",
     "2027 — Still flirting like day one 😌",

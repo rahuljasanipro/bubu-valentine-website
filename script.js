@@ -584,6 +584,36 @@ function setupExtras(){
     });
     closeCert.addEventListener("click", ()=> certOverlay.classList.add("hidden"));
   }
+
+  /* ---------------- PASSWORD CHECK LOGIC (NEW) ---------------- */
+  const passContainer = document.getElementById("passcodeControl");
+  const passInput = document.getElementById("passcodeInput");
+  const passBtn = document.getElementById("passcodeBtn");
+  const passMsg = document.getElementById("passcodeError");
+  const startBtn = document.getElementById("introStartBtn");
+
+  if(passBtn && passInput && startBtn){
+     const checkPass = () => {
+        const val = passInput.value.trim();
+        // Check against config
+        if(val === (config.passcode || "1402")){
+           // Unlock
+           passContainer.classList.add("hidden");
+           startBtn.classList.remove("hidden");
+           passMsg.classList.add("hidden");
+        } else {
+           // Wrong password
+           passMsg.classList.remove("hidden");
+           passInput.classList.add("error-shake");
+           setTimeout(()=> passInput.classList.remove("error-shake"), 300);
+        }
+     };
+
+     passBtn.addEventListener("click", checkPass);
+     passInput.addEventListener("keypress", (e) => {
+        if(e.key === "Enter") checkPass();
+     });
+  }
 }
 
 /* ---------------- FUTURE TIMELINE ---------------- */

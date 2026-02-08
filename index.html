@@ -39,6 +39,21 @@
   <!-- Fireworks canvas -->
   <canvas id="fireworksCanvas" class="fireworks-canvas"></canvas>
 
+  <!-- Camera flash overlay -->
+  <div id="flashOverlay" class="flash-overlay hidden"></div>
+
+  <!-- Lie detector overlay -->
+  <div id="lieDetector" class="lie-detector hidden">
+    <div class="lie-card">
+      <div class="lie-title">🧪 Lie Detector Scan</div>
+      <div class="lie-sub" id="lieText">Analyzing statement…</div>
+      <div class="ecg">
+        <div class="ecg-line"></div>
+      </div>
+      <div class="lie-result" id="lieResult">Result: Pending…</div>
+    </div>
+  </div>
+
   <!-- Fake Chat Intro -->
   <section id="chatSim" class="chat-sim hidden">
     <div class="chat-card">
@@ -48,12 +63,26 @@
     </div>
   </section>
 
+  <!-- Fake Incoming Call -->
+  <section id="incomingCall" class="call-screen hidden">
+    <div class="call-card">
+      <div class="call-avatar">📞</div>
+      <div class="call-name">Ro Sirji</div>
+      <div class="call-status">Incoming call…</div>
+      <div class="call-actions">
+        <button id="declineCall" class="btn btn-no" type="button">Decline</button>
+        <button id="acceptCall" class="btn btn-yes" type="button">Accept</button>
+      </div>
+      <div class="call-hint">Accept to continue 💗</div>
+    </div>
+  </section>
+
   <!-- Main container -->
   <main class="container">
     <h1 id="valentineTitle" class="title">Bubu, my love...</h1>
 
     <!-- Question 1 -->
-    <section id="question1" class="question-section">
+    <section id="question1" class="question-section hidden">
       <p id="question1Text" class="question-text">Question 1</p>
 
       <div class="btn-row">
@@ -62,8 +91,21 @@
       </div>
 
       <button id="secretAnswerBtn" class="btn btn-secret" type="button">Secret 💌</button>
-
       <div id="systemWarning" class="system-warning hidden"></div>
+    </section>
+
+    <!-- Fake CAPTCHA -->
+    <section id="captcha" class="question-section hidden">
+      <p class="question-text">Quick verification 😌</p>
+      <div class="captcha-box">
+        <div class="captcha-title">✅ Verify you’re not a robot in love</div>
+        <label class="captcha-row">
+          <input id="captchaCheck" type="checkbox" />
+          <span>I am deeply in love 💗</span>
+        </label>
+        <button id="captchaContinue" class="btn btn-next" type="button">Continue ❤️</button>
+        <div id="captchaMsg" class="captcha-msg hidden"></div>
+      </div>
     </section>
 
     <!-- Question 2 -->
@@ -78,7 +120,6 @@
 
         <input id="loveMeter" class="love-meter" type="range" min="0" max="10000" value="100" />
         <div id="extraLove" class="extra-love hidden"></div>
-
         <div id="smartReaction" class="smart-reaction">🙂</div>
       </div>
 
@@ -92,6 +133,13 @@
         <div id="scanFill"></div>
       </div>
       <div id="scanText" class="scan-text">Analyzing love patterns…</div>
+    </section>
+
+    <!-- AI Love Prediction -->
+    <section id="aiPrediction" class="question-section hidden">
+      <h2 class="scan-title">AI Love Prediction 🤖💘</h2>
+      <pre id="aiBox" class="ai-box">Analyzing…</pre>
+      <button id="aiContinue" class="btn btn-next" type="button">Continue 💗</button>
     </section>
 
     <!-- Question 3 -->
@@ -111,7 +159,11 @@
       <h2 id="celebrationTitle" class="celebrate-title">Yay!</h2>
       <p id="celebrationMessage" class="celebrate-msg">Message</p>
       <div id="celebrationEmojis" class="celebrate-emojis">🎁💖🤗💝💋❤️💕</div>
-      <button id="seeTimelineBtn" class="btn btn-next" type="button">See Our Timeline 💗</button>
+
+      <div class="celebrate-actions">
+        <button id="seeTimelineBtn" class="btn btn-next" type="button">See Our Timeline 💗</button>
+        <button id="openExtrasBtn" class="btn btn-next" type="button">Open Extras ✨</button>
+      </div>
     </section>
 
     <!-- Memory Timeline Scroll -->
@@ -121,6 +173,43 @@
       <div class="tl-item">🛕 First meet — <b>Banaras Trip 17th Jan</b></div>
       <div class="tl-item">😂 First fight — <b>When you said no to gargle</b></div>
       <div class="tl-item">💘 Now — <b>Valentine</b></div>
+
+      <div class="future-wrap">
+        <div class="future-title">🔮 Future Timeline Generator</div>
+        <button id="genFutureBtn" class="btn btn-next" type="button">Generate Future 💫</button>
+        <div id="futureList" class="future-list"></div>
+      </div>
+    </section>
+
+    <!-- Extras (Why Love / Hugs / Promise Wall) -->
+    <section id="extras" class="extras hidden">
+      <h2 class="timeline-title">Extras ✨</h2>
+
+      <div class="extras-grid">
+        <!-- Why I love you -->
+        <div class="extra-card">
+          <div class="extra-title">💌 Why I Love You</div>
+          <div id="whyLoveText" class="extra-text">Click for a reason 😌</div>
+          <button id="whyLoveBtn" class="btn btn-next" type="button">Give me a reason 💗</button>
+        </div>
+
+        <!-- Hug counter -->
+        <div class="extra-card">
+          <div class="extra-title">🤗 Hug Counter</div>
+          <div class="hug-count">Hugs: <span id="hugCount">0</span></div>
+          <div id="hugMsg" class="extra-text">Tap to collect hugs!</div>
+          <button id="hugBtn" class="btn btn-next" type="button">Hug 🤗</button>
+        </div>
+
+        <!-- Promise wall -->
+        <div class="extra-card extra-wide">
+          <div class="extra-title">🧱 Promise Wall</div>
+          <div id="promiseWall" class="promise-wall"></div>
+          <button id="shufflePromises" class="btn btn-next" type="button">Shuffle Promises 🔁</button>
+        </div>
+      </div>
+
+      <button id="backFromExtras" class="btn btn-no" type="button">Back</button>
     </section>
   </main>
 

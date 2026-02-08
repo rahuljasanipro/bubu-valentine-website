@@ -1,6 +1,6 @@
 const CONFIG = {
   // 🏷️ UI VERSION
-  version: "v4.0 (Stable) 🚀",
+  version: "v4.0 💗",
 
   // 🔑 PASSWORD TO UNLOCK
   passcode: "1111",
@@ -79,7 +79,7 @@ const CONFIG = {
 
   certificate: {
     title: "Certificate of Being the Best Bubu",
-    body: "This certifies that Bubu is officially the cutest, most amazing girlfriend in the world.",
+    body: "This certifies that Bubu is officially the cutest, most amazing WIFEY in the world.",
     signature: "Signed: Ro Ro 💘",
     date: "February 14, 2026"
   },
@@ -103,8 +103,8 @@ const CONFIG = {
     "Scanning: Gargle incident trauma 😂✅",
     "Calculating compatibility…",
     "Result: 1000% match 💞",
-    "Recommended action: hug immediately 🤗",
-    "Warning: separation probability = 0.0001% 😈"
+    "Recommended action: Hug immediately 🤗",
+    "Warning: separation probability = 0.0000% 😈"
   ],
 
   colors: {

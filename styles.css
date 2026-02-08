@@ -451,6 +451,23 @@ body{
 
 /* --- NEW FEATURES STYLING --- */
 
+/* VERSION BADGE */
+.version-badge {
+  position: fixed;
+  bottom: 8px;
+  right: 8px;
+  background: rgba(0,0,0,0.4);
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-family: monospace;
+  z-index: 30000;
+  cursor: pointer;
+  pointer-events: auto;
+  user-select: none;
+}
+
 /* 1. Game Overlay */
 .game-overlay{
     position: fixed; inset: 0;

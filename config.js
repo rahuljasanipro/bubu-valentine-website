@@ -74,7 +74,7 @@ const CONFIG = {
 
   certificate: {
     title: "Certificate of Being the Best Bubu",
-    body: "This certifies that Bubu is officially the cutest, most amazing girlfriend in the world.",
+    body: "This certifies that Bubu is officially the cutest, most amazing WIFEY in the world.",
     signature: "Signed: Ro Ro 💘",
     date: "February 14, 2026"
   },
@@ -83,11 +83,11 @@ const CONFIG = {
   futureTimelineOrdered: [
     "2026 — More trips together 🌍",
     "2027 — Still flirting like day one 😌",
-    "2028 — Marriage by 2028 😤💍",
+    "2028 — Marriage 💍",
     "2029 — First BIG vacation together ✈️",
     "2032 — Still choosing you, always 💗",
     "2035 — Anniversary celebrations on max 🎉",
-    "2040 — Banaras 2.0 (and 3.0) confirmed 🛕",
+    "2040 — Banaras 15.0 confirmed 🛕",
     "2045 — Still laughing at the same jokes 😄",
     "2050 — Love level: infinite 🚀",
     "2060 — Still together. Still us 💘"
@@ -100,7 +100,7 @@ const CONFIG = {
     "Calculating compatibility…",
     "Result: 1000% match 💞",
     "Recommended action: hug immediately 🤗",
-    "Warning: separation probability = 0.0001% 😈"
+    "Warning: separation probability = 0.0000% 😈"
   ],
 
   colors: {

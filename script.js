@@ -14,13 +14,9 @@ document.title = config.pageTitle || "Valentine 💝";
 
 /* ---------------- UTIL ---------------- */
 function showOnly(id){
-  // hide main sections
   document.querySelectorAll(".question-section").forEach(s => s.classList.add("hidden"));
-  // hide other long sections
-  const t = document.getElementById("timeline");
-  if (t) t.classList.add("hidden");
-  const x = document.getElementById("extras");
-  if (x) x.classList.add("hidden");
+  document.getElementById("timeline")?.classList.add("hidden");
+  document.getElementById("extras")?.classList.add("hidden");
 
   const el = document.getElementById(id);
   if(el) el.classList.remove("hidden");
@@ -45,10 +41,7 @@ function flashWarning(warnEl, text){
 }
 
 function sleep(ms){ return new Promise(r => setTimeout(r, ms)); }
-
-function randFrom(arr){
-  return arr[Math.floor(Math.random() * arr.length)];
-}
+function randFrom(arr){ return arr[Math.floor(Math.random() * arr.length)]; }
 
 /* ---------------- YOUTUBE MUSIC ---------------- */
 let ytPlayer = null;
@@ -150,13 +143,13 @@ function cameraFlash(){
   const f = document.getElementById("flashOverlay");
   if(!f) return;
   f.classList.remove("hidden");
-  f.classList.remove("flash"); // restart animation
-  void f.offsetWidth; // force reflow
+  f.classList.remove("flash");
+  void f.offsetWidth;
   f.classList.add("flash");
   setTimeout(()=> f.classList.add("hidden"), 420);
 }
 
-/* ---------------- LIE DETECTOR OVERLAY ---------------- */
+/* ---------------- LIE DETECTOR ---------------- */
 let lieBusy = false;
 async function lieDetectorScan(message){
   if(lieBusy) return;
@@ -233,7 +226,6 @@ function runIncomingCall(){
     }, { once:true });
 
     decline.addEventListener("click", () => {
-      // decline just pranks and keeps showing
       lieDetectorScan("Decline detected… running love verification 😈");
     });
   });
@@ -334,10 +326,7 @@ async function runAiPrediction(next){
   showOnly("aiPrediction");
   box.textContent = "";
 
-  const lines = config.aiPredictionLines || [
-    "Analyzing…", "Result: 1000% match 💞"
-  ];
-
+  const lines = config.aiPredictionLines || ["Analyzing…", "Result: 1000% match 💞"];
   for(const l of lines){
     box.textContent += l + "\n";
     await sleep(520);
@@ -346,14 +335,13 @@ async function runAiPrediction(next){
   btn.onclick = () => next();
 }
 
-/* ---------------- NO BUTTON: START NORMAL -> BOUNCE -> RUN AWAY ---------------- */
+/* ---------------- NO BUTTON PRANK ---------------- */
 function demonNoStartsNice(noBtn, yesBtn, warnEl){
   if(!noBtn || !yesBtn) return;
 
   let attempts = 0;
   let runaway = false;
 
-  // Start normal with bounce on hover (but stays in layout)
   noBtn.classList.add("no-bounce");
 
   const moveAway = () => {
@@ -369,11 +357,10 @@ function demonNoStartsNice(noBtn, yesBtn, warnEl){
     noBtn.style.transform = `rotate(${Math.random()*360}deg) scale(${0.8 + Math.random()*0.5})`;
   };
 
-  const onTry = async (e) => {
+  const onTry = (e) => {
     e.preventDefault();
     attempts++;
 
-    // Lie detector scan on "No"
     if(attempts === 1){
       lieDetectorScan("Statement: “No” — verifying…");
     }
@@ -476,20 +463,26 @@ function showLockScreenThen(next){
   }, 1500);
 }
 
-/* ---------------- DARK MODE ---------------- */
+/* ---------------- NIGHT SKINCARE MODE ---------------- */
 function setupDarkMode(){
   const btn = document.getElementById("darkModeToggle");
   if(!btn) return;
 
   const saved = localStorage.getItem("val_dark") === "1";
   if(saved) document.body.classList.add("dark");
-  btn.textContent = document.body.classList.contains("dark") ? "☀️ Light" : "🌙 Dark";
+
+  const setLabel = () => {
+    btn.textContent = document.body.classList.contains("dark")
+      ? "🧴 Night Skincare Mode: ON"
+      : "🌙 Night Skincare Mode";
+  };
+  setLabel();
 
   btn.addEventListener("click", ()=>{
     document.body.classList.toggle("dark");
     const isDark = document.body.classList.contains("dark");
     localStorage.setItem("val_dark", isDark ? "1" : "0");
-    btn.textContent = isDark ? "☀️ Light" : "🌙 Dark";
+    setLabel();
   });
 }
 
@@ -506,9 +499,11 @@ function setupTimedPopup(){
 function setupExtras(){
   const whyBtn = document.getElementById("whyLoveBtn");
   const whyText = document.getElementById("whyLoveText");
+
   const hugBtn = document.getElementById("hugBtn");
   const hugCountEl = document.getElementById("hugCount");
   const hugMsg = document.getElementById("hugMsg");
+
   const wall = document.getElementById("promiseWall");
   const shuffle = document.getElementById("shufflePromises");
 
@@ -526,14 +521,15 @@ function setupExtras(){
       hugCount++;
       hugCountEl.textContent = String(hugCount);
 
-      const msgs = [
-        "Warm hug 🤗",
-        "Tight hug 😌",
-        "Banaras hug 🛕🤗",
-        "Ok too tight 😭",
-        "Infinity hug 🚀🤗"
-      ];
-      hugMsg.textContent = msgs[Math.min(hugCount-1, msgs.length-1)];
+      const msgs = config.hugMessages || ["Warm hug 🤗","Tight hug 😌","Infinity hug 🚀🤗"];
+
+      // Special milestones
+      if(hugCount === 5) hugMsg.textContent = "5 hugs collected… obsessed? 😳🤗";
+      else if(hugCount === 10) hugMsg.textContent = "10 hugs… ok you win 😭💗";
+      else if(hugCount === 15) hugMsg.textContent = "15 hugs… skincare-safe only 😄🧴";
+      else if(hugCount === 20) hugMsg.textContent = "20 hugs… marriage vibes 😌💍";
+      else if(hugCount === 30) hugMsg.textContent = "30 hugs… certified cuddle monster 🏆🤗";
+      else hugMsg.textContent = msgs[(hugCount - 1) % msgs.length];
     });
   }
 
@@ -541,7 +537,6 @@ function setupExtras(){
     if(!wall) return;
     wall.innerHTML = "";
     const list = (config.promises || []).slice();
-    // shuffle
     for(let i=list.length-1;i>0;i--){
       const j = Math.floor(Math.random()*(i+1));
       [list[i], list[j]] = [list[j], list[i]];
@@ -577,6 +572,54 @@ function setupFutureGenerator(){
   });
 }
 
+/* ---------------- START OVER RESET ---------------- */
+function setupStartOver(musicToggle){
+  const startOverBtn = document.getElementById("startOverBtn");
+  if(!startOverBtn) return;
+
+  startOverBtn.addEventListener("click", ()=>{
+    stopYtMusic();
+    if(musicToggle) musicToggle.textContent = "🎵 Play Music";
+
+    // Reset moved "No" buttons
+    const resetBtn = (id) => {
+      const b = document.getElementById(id);
+      if(!b) return;
+      b.style.position = "";
+      b.style.left = "";
+      b.style.top = "";
+      b.style.transform = "";
+      b.classList.add("no-bounce");
+    };
+    resetBtn("noBtn1");
+    resetBtn("noBtn3");
+
+    // Reset love meter
+    const loveMeter = document.getElementById("loveMeter");
+    const loveValue = document.getElementById("loveValue");
+    const extraLove = document.getElementById("extraLove");
+    const smart = document.getElementById("smartReaction");
+    if(loveMeter) loveMeter.value = 100;
+    if(loveValue) loveValue.textContent = "100";
+    if(extraLove){ extraLove.classList.add("hidden"); extraLove.textContent = ""; extraLove.classList.remove("super-love"); }
+    if(smart) smart.textContent = "🙂 hmm okay";
+
+    // Reset captcha checkbox
+    const captchaCheck = document.getElementById("captchaCheck");
+    if(captchaCheck) captchaCheck.checked = false;
+
+    // Hide long sections
+    document.getElementById("timeline")?.classList.add("hidden");
+    document.getElementById("extras")?.classList.add("hidden");
+
+    // Show intro overlay again
+    const overlay = document.getElementById("introOverlay");
+    if(overlay) overlay.style.display = "flex";
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+}
+
 /* ---------------- MAIN INIT ---------------- */
 window.addEventListener("DOMContentLoaded", async () => {
   setupDarkMode();
@@ -596,6 +639,8 @@ window.addEventListener("DOMContentLoaded", async () => {
       }
     });
   }
+
+  setupStartOver(musicToggle);
 
   // Set texts from config
   const title = document.getElementById("valentineTitle");
@@ -620,17 +665,11 @@ window.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("yesBtn3").textContent = config.questions?.third?.yesBtn || "Yes!";
   document.getElementById("noBtn3").textContent = config.questions?.third?.noBtn || "No";
 
-  // Floating emojis
   createFloating();
-
-  // Love meter
   setupLoveMeter();
-
-  // Extras setup
   setupExtras();
   setupFutureGenerator();
 
-  // Fireworks
   const fw = setupFireworks();
 
   // Start flow
@@ -656,19 +695,16 @@ window.addEventListener("DOMContentLoaded", async () => {
   const no1 = document.getElementById("noBtn1");
   const warn1 = document.getElementById("systemWarning");
 
-  // Yes -> CAPTCHA first
   yes1.addEventListener("click", ()=> showOnly("captcha"));
-
   demonNoStartsNice(no1, yes1, warn1);
 
   document.getElementById("secretAnswerBtn").addEventListener("click", ()=>{
     alert(config.questions?.first?.secretAnswer || "I love you ❤️");
   });
 
-  // CAPTCHA pass -> Q2
   setupCaptcha(()=> showOnly("question2"));
 
-  // Q2 next -> compat scan -> AI prediction -> Q3
+  // Q2 -> compat -> AI -> Q3
   document.getElementById("nextBtn").addEventListener("click", ()=>{
     runCompatScan(async ()=>{
       await runAiPrediction(()=> showOnly("question3"));
@@ -679,14 +715,18 @@ window.addEventListener("DOMContentLoaded", async () => {
   const yes3 = document.getElementById("yesBtn3");
   const no3 = document.getElementById("noBtn3");
   const warn3 = document.getElementById("systemWarning3");
-
   demonNoStartsNice(no3, yes3, warn3);
 
-  // YES -> camera flash + lock + celebration + fireworks
   yes3.addEventListener("click", ()=>{
     cameraFlash();
     showLockScreenThen(()=>{
       showOnly("celebration");
+
+      // Heartbeat hint on celebration buttons
+      ["seeTimelineBtn","openExtrasBtn","startOverBtn"].forEach(id=>{
+        const b = document.getElementById(id);
+        if(b) b.classList.add("heartbeat-hint");
+      });
 
       const ct = document.getElementById("celebrationTitle");
       const cm = document.getElementById("celebrationMessage");
@@ -700,30 +740,24 @@ window.addEventListener("DOMContentLoaded", async () => {
     });
   });
 
-  // Timeline button
-  const seeTl = document.getElementById("seeTimelineBtn");
-  const tl = document.getElementById("timeline");
-  if(seeTl && tl){
-    seeTl.addEventListener("click", ()=>{
-      tl.classList.remove("hidden");
-      tl.scrollIntoView({ behavior: "smooth", block: "start" });
-    });
-  }
+  // Timeline
+  document.getElementById("seeTimelineBtn")?.addEventListener("click", ()=>{
+    const tl = document.getElementById("timeline");
+    if(!tl) return;
+    tl.classList.remove("hidden");
+    tl.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
 
-  // Extras open
-  const openExtras = document.getElementById("openExtrasBtn");
-  const extras = document.getElementById("extras");
-  const back = document.getElementById("backFromExtras");
-  if(openExtras && extras){
-    openExtras.addEventListener("click", ()=>{
-      extras.classList.remove("hidden");
-      extras.scrollIntoView({ behavior: "smooth", block: "start" });
-    });
-  }
-  if(back && extras){
-    back.addEventListener("click", ()=>{
-      extras.classList.add("hidden");
-      showOnly("celebration");
-    });
-  }
+  // Surprise (Extras)
+  document.getElementById("openExtrasBtn")?.addEventListener("click", ()=>{
+    const extras = document.getElementById("extras");
+    if(!extras) return;
+    extras.classList.remove("hidden");
+    extras.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+
+  document.getElementById("backFromExtras")?.addEventListener("click", ()=>{
+    document.getElementById("extras")?.classList.add("hidden");
+    showOnly("celebration");
+  });
 });

@@ -19,16 +19,28 @@
       <p class="intro-subtitle">Before you enter… promise you’ll smile 😌</p>
 
       <button
-  id="introStartBtn"
-  onclick="document.getElementById('bgMusic').play().catch(()=>{});"
->
-  Start 💖
-</button>
+        id="introStartBtn"
+        type="button"
+        onclick="
+          const a=document.getElementById('bgMusic');
+          const o=document.getElementById('introOverlay');
+          const t=document.getElementById('musicToggle');
+          if(o) o.style.display='none';
+          if(a){
+            a.muted=false;
+            a.volume=0.85;
+            a.load();
+            a.play().then(()=>{ if(t) t.innerText='🔇 Stop Music'; })
+            .catch((e)=>{ alert('Tap 🎵 Play Music once to start'); console.log(e); });
+          }
+        "
+      >
+        Start 💖
+      </button>
 
       <p class="intro-hint">Psst: there’s a hidden surprise inside 👀</p>
     </div>
   </div>
-
 
   <!-- Floating emojis -->
   <div class="floating-elements"></div>
@@ -61,9 +73,7 @@
       <div class="meter-wrap">
         <div class="meter-header">
           <span id="startText" class="meter-start">This much!</span>
-          <span class="meter-value">
-            <span id="loveValue">100</span>%
-          </span>
+          <span class="meter-value"><span id="loveValue">100</span>%</span>
         </div>
 
         <input id="loveMeter" class="love-meter" type="range" min="0" max="10000" value="100" />
@@ -91,15 +101,40 @@
     </section>
   </main>
 
-  <!-- Config + Script -->
+  <!-- Config -->
   <script src="config.js"></script>
 
-<audio id="bgMusic" preload="auto" loop playsinline>
-  <source src="assets/music.mp3" type="audio/mpeg">
-</audio>
+  <!-- Audio (local mp3) -->
+  <audio id="bgMusic" preload="auto" loop playsinline controls style="display:none;">
+    <source src="assets/music.mp3" type="audio/mpeg">
+  </audio>
 
-<script src="script.js"></script>
+  <!-- Script -->
+  <script src="script.js"></script>
 
+  <!-- Super reliable toggle -->
+  <script>
+    (function(){
+      const btn=document.getElementById('musicToggle');
+      const a=document.getElementById('bgMusic');
+      if(!btn || !a) return;
 
+      btn.addEventListener('click', async () => {
+        try{
+          if(a.paused){
+            a.muted=false; a.volume=0.85;
+            await a.play();
+            btn.innerText='🔇 Stop Music';
+          }else{
+            a.pause();
+            btn.innerText='🎵 Play Music';
+          }
+        }catch(e){
+          console.log(e);
+          alert('Tap again to allow audio 🎵');
+        }
+      });
+    })();
+  </script>
 </body>
 </html>

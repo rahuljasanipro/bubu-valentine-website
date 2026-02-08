@@ -531,7 +531,7 @@ function setupTimedPopup(){
   setTimeout(()=>{
     const overlay = document.getElementById("introOverlay");
     if(overlay && overlay.style.display !== "none") return;
-    alert("Still here? That means you like me 😌💗");
+    // alert("Still here? That means you like me 😌💗"); // Removed to be less annoying
   }, 20000);
 }
 
@@ -631,6 +631,14 @@ window.addEventListener("DOMContentLoaded", async () => {
         musicToggle.textContent = "🔇 Stop Music";
       }
     });
+  }
+  
+  // Start Over button logic
+  const startOverBtn = document.getElementById("startOverBtn");
+  if(startOverBtn){
+     startOverBtn.addEventListener("click", ()=>{
+         window.location.reload();
+     });
   }
 
   // Texts

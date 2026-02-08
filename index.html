@@ -8,6 +8,9 @@
 </head>
 
 <body>
+  <!-- Flash effect -->
+  <div id="cameraFlash" class="camera-flash hidden"></div>
+
   <!-- Intro Overlay -->
   <div id="introOverlay" class="intro-overlay">
     <div class="intro-card">
@@ -18,7 +21,9 @@
       <h1 class="intro-title">Hey Bubu 👀💗</h1>
       <p class="intro-subtitle">Before you enter… promise you’ll smile 😌</p>
 
-      <button id="introStartBtn" class="btn btn-next" type="button">Start 💖</button>
+      <button id="introStartBtn" class="btn primary-btn" type="button">
+        Start 💖
+      </button>
 
       <p class="intro-hint">Psst: there’s a hidden surprise inside 👀</p>
     </div>
@@ -29,57 +34,66 @@
 
   <!-- Top controls -->
   <div class="top-controls">
-    <button id="modeToggle" class="chip" type="button">🧴 Sunscreen Mode</button>
-    <button id="musicToggle" class="chip" type="button">🎵 Play Music</button>
+    <button id="modeToggle" class="pill-btn" type="button">🧴 Sunscreen Mode</button>
+    <button id="musicToggle" class="pill-btn" type="button">🎵 Play Music</button>
+    <button id="startOverBtn" class="pill-btn ghost" type="button">↩️ Start Over</button>
   </div>
-
-  <!-- Hidden YouTube player -->
-  <div id="ytMusic" style="position:fixed; left:-9999px; top:-9999px; width:1px; height:1px;"></div>
-
-  <!-- Fireworks canvas -->
-  <canvas id="fireworksCanvas" class="fireworks-canvas"></canvas>
-
-  <!-- Camera flash overlay -->
-  <div id="flashOverlay" class="flash-overlay hidden"></div>
-
-  <!-- Lie detector overlay -->
-  <div id="lieDetector" class="lie-detector hidden">
-    <div class="lie-card">
-      <div class="lie-title">🧪 Lie Detector Scan</div>
-      <div class="lie-sub" id="lieText">Analyzing statement…</div>
-      <div class="ecg">
-        <div class="ecg-line"></div>
-      </div>
-      <div class="lie-result" id="lieResult">Result: Pending…</div>
-    </div>
-  </div>
-
-  <!-- Fake Chat Intro -->
-  <section id="chatSim" class="chat-sim hidden">
-    <div class="chat-card">
-      <div class="chat-header">💬 Ro Ro & Bubu</div>
-      <div id="chatLines"></div>
-      <button id="chatContinue" class="btn btn-next hidden" type="button">Continue 💗</button>
-    </div>
-  </section>
-
-  <!-- Fake Incoming Call -->
-  <section id="incomingCall" class="call-screen hidden">
-    <div class="call-card">
-      <div class="call-avatar">📞</div>
-      <div class="call-name">Ro Sirji</div>
-      <div class="call-status">Incoming call…</div>
-      <div class="call-actions">
-        <button id="declineCall" class="btn btn-no" type="button">Decline</button>
-        <button id="acceptCall" class="btn btn-yes" type="button">Accept</button>
-      </div>
-      <div class="call-hint">Accept to continue 💗</div>
-    </div>
-  </section>
 
   <!-- Main container -->
   <main class="container">
     <h1 id="valentineTitle" class="title">Bubu, my love...</h1>
+
+    <!-- AI Love Prediction -->
+    <section id="aiSection" class="card-section">
+      <h2 class="card-title">AI Love Prediction 🤖💘</h2>
+      <div class="card-inner">
+        <pre id="aiText" class="terminal">
+Initializing romantic intelligence…
+Scanning: Banaras memories ✅
+Scanning: Relative trauma 😂✅
+Calculating compatibility…
+Result: 1000% match 💞
+Recommended action: hug immediately 🫂
+Warning: separation probability = 0.0001% 😈
+        </pre>
+        <button id="aiContinueBtn" class="btn primary-btn full" type="button">Continue 💗</button>
+      </div>
+    </section>
+
+    <!-- Quick Verification -->
+    <section id="captchaSection" class="card-section hidden">
+      <h2 class="card-title">Quick verification 😌</h2>
+      <div class="card-inner">
+        <p class="captcha-title">✅ Verify you’re not a robot in love</p>
+
+        <label class="captcha-box" for="deeplyInLove">
+          <input id="deeplyInLove" type="checkbox" />
+          <span>I am deeply in love 💗</span>
+        </label>
+
+        <button id="captchaContinueBtn" class="btn primary-btn full" type="button" disabled>
+          Continue ❤️
+        </button>
+      </div>
+    </section>
+
+    <!-- View Visuals -->
+    <section id="visualSection" class="card-section hidden">
+      <h2 class="card-title">Memory Timeline 🗓️💞</h2>
+      <div class="card-inner">
+        <div class="timeline">
+          <div class="timeline-row"><span class="t-dot"></span><span>First chat:</span><b>3rd Nov</b></div>
+          <div class="timeline-row"><span class="t-dot"></span><span>First meet:</span><b>Banaras Trip 17th Jan</b></div>
+          <div class="timeline-row"><span class="t-dot"></span><span>First fight:</span><b>When you said no to gargle 😤</b></div>
+          <div class="timeline-row"><span class="t-dot"></span><span>Now:</span><b>Valentine 💘</b></div>
+        </div>
+
+        <div class="btn-row wrap">
+          <button id="viewVisualBtn" class="btn secondary-btn" type="button">View the Visuals 📸</button>
+          <button id="visualContinueBtn" class="btn primary-btn" type="button">Continue 💞</button>
+        </div>
+      </div>
+    </section>
 
     <!-- Question 1 -->
     <section id="question1" class="question-section hidden">
@@ -90,24 +104,9 @@
         <button id="noBtn1" class="btn btn-no" type="button">No</button>
       </div>
 
-      <button id="secretAnswerBtn" class="btn btn-secret" type="button">Secret 💌</button>
-      <div id="systemWarning" class="system-warning hidden"></div>
-    </section>
-
-    <!-- Fake CAPTCHA -->
-    <section id="captcha" class="question-section hidden">
-      <p class="question-text">Quick verification 😌</p>
-      <div class="captcha-box">
-        <div class="captcha-title">✅ Verify you’re not a robot in love</div>
-
-        <label class="captcha-row">
-          <input id="captchaCheck" type="checkbox" />
-          <span>I am deeply in love 💗</span>
-        </label>
-
-        <button id="captchaContinue" class="btn btn-next captcha-btn" type="button">Continue ❤️</button>
-        <div id="captchaMsg" class="captcha-msg hidden"></div>
-      </div>
+      <button id="secretAnswerBtn" class="btn btn-secret" type="button">
+        Secret 💌
+      </button>
     </section>
 
     <!-- Question 2 -->
@@ -120,31 +119,20 @@
           <span class="meter-value"><span id="loveValue">100</span>%</span>
         </div>
 
-        <div class="meter-slider-wrap">
-          <input id="loveMeter" class="love-meter" type="range" min="0" max="100000" value="100" />
-        </div>
-
+        <input id="loveMeter" class="love-meter" type="range" min="0" max="100000" value="100" />
         <div id="extraLove" class="extra-love hidden"></div>
-        <div id="smartReaction" class="smart-reaction">🙂</div>
       </div>
 
-      <button id="nextBtn" class="btn btn-next" type="button">Next ❤️</button>
+      <button id="nextBtn" class="btn btn-next primary-btn" type="button">Next ❤️</button>
     </section>
 
-    <!-- Compatibility Meter -->
-    <section id="compat" class="question-section hidden">
-      <h2 class="scan-title">Couple Compatibility Scan 💞</h2>
-      <div class="scan-bar">
-        <div id="scanFill"></div>
+    <!-- Future Timeline Generator -->
+    <section id="futureSection" class="card-section hidden">
+      <h2 class="card-title">Future Timeline Generator 🔮💍</h2>
+      <div class="card-inner">
+        <div id="futureTimeline" class="future-box"></div>
+        <button id="futureContinueBtn" class="btn primary-btn full" type="button">Continue 💗</button>
       </div>
-      <div id="scanText" class="scan-text">Analyzing love patterns…</div>
-    </section>
-
-    <!-- AI Love Prediction -->
-    <section id="aiPrediction" class="question-section hidden">
-      <h2 class="scan-title">AI Love Prediction 🤖💘</h2>
-      <pre id="aiBox" class="ai-box">Analyzing…</pre>
-      <button id="aiContinue" class="btn btn-next" type="button">Continue 💗</button>
     </section>
 
     <!-- Question 3 -->
@@ -155,8 +143,6 @@
         <button id="yesBtn3" class="btn btn-yes" type="button">Yes!! 💘</button>
         <button id="noBtn3" class="btn btn-no" type="button">No 😜</button>
       </div>
-
-      <div id="systemWarning3" class="system-warning hidden"></div>
     </section>
 
     <!-- Celebration -->
@@ -164,65 +150,30 @@
       <h2 id="celebrationTitle" class="celebrate-title">Yay!</h2>
       <p id="celebrationMessage" class="celebrate-msg">Message</p>
       <div id="celebrationEmojis" class="celebrate-emojis">🎁💖🤗💝💋❤️💕</div>
-
-      <div class="celebrate-actions">
-        <button id="seeTimelineBtn" class="btn btn-next" type="button">See Our Timeline 💗</button>
-        <button id="openExtrasBtn" class="btn btn-next" type="button">Open Extras ✨</button>
-      </div>
-    </section>
-
-    <!-- Memory Timeline Scroll -->
-    <section id="timeline" class="timeline hidden">
-      <h2 class="timeline-title">Our Story So Far 💗</h2>
-      <div class="tl-item">💬 First chat — <b>3rd Nov</b></div>
-      <div class="tl-item">🛕 First meet — <b>Banaras Trip 17th Jan</b></div>
-      <div class="tl-item">😂 First fight — <b>When you said no to gargle</b></div>
-      <div class="tl-item">💘 Now — <b>Valentine</b></div>
-
-      <div class="future-wrap">
-        <div class="future-title">🔮 Future Timeline Generator</div>
-        <button id="genFutureBtn" class="btn btn-next" type="button">Show Future 💫</button>
-        <div id="futureOne" class="future-one"></div>
-      </div>
-    </section>
-
-    <!-- Extras -->
-    <section id="extras" class="extras hidden">
-      <h2 class="timeline-title">Extras ✨</h2>
-
-      <div class="extras-grid">
-        <div class="extra-card">
-          <div class="extra-title">💌 Why I Love You</div>
-          <div id="whyLoveText" class="extra-text">Click for a reason 😌</div>
-          <button id="whyLoveBtn" class="btn btn-next" type="button">Give me a reason 💗</button>
-        </div>
-
-        <div class="extra-card">
-          <div class="extra-title">🤗 Hug Counter</div>
-          <div class="hug-count">Hugs: <span id="hugCount">0</span></div>
-          <div id="hugMsg" class="extra-text">Tap to collect hugs!</div>
-          <button id="hugBtn" class="btn btn-next" type="button">Hug 🤗</button>
-        </div>
-
-        <div class="extra-card extra-wide">
-          <div class="extra-title">🧱 Promise Wall</div>
-          <div id="promiseWall" class="promise-wall"></div>
-          <button id="shufflePromises" class="btn btn-next" type="button">Shuffle Promises 🔁</button>
-        </div>
-      </div>
-
-      <button id="backFromExtras" class="btn btn-no" type="button">Back</button>
     </section>
   </main>
 
-  <!-- Lock Screen -->
-  <section id="lockScreen" class="lock-screen hidden">
-    💘 Access to Ro Ro Granted 💘
-  </section>
+  <!-- Visual modal -->
+  <div id="visualModal" class="modal hidden" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3>Our Visuals 📸💞</h3>
+        <button id="closeVisualModal" class="icon-btn" type="button">✖</button>
+      </div>
+      <div class="modal-body">
+        <img src="assets/couple.jpg" alt="Ro Ro & Bubu" class="modal-img" />
+        <p class="modal-note">Proof that we’re cute together 😌💗</p>
+      </div>
+      <button id="visualOkBtn" class="btn primary-btn full" type="button">Okay 💘</button>
+    </div>
+  </div>
 
-  <!-- YouTube IFrame API -->
-  <script src="https://www.youtube.com/iframe_api"></script>
+  <!-- Audio -->
+  <audio id="bgMusic" preload="auto" loop playsinline>
+    <source src="assets/music.mp3" type="audio/mpeg">
+  </audio>
 
+  <!-- Config + Script -->
   <script src="config.js"></script>
   <script src="script.js"></script>
 </body>

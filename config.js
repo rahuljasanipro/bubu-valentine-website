@@ -1,5 +1,5 @@
 const CONFIG = {
-  // 🔑 PASSWORD TO UNLOCK THE SITE
+  // 🔑 PASSWORD TO UNLOCK (Must be a string)
   passcode: "1111",
 
   valentineName: "Bubu",
